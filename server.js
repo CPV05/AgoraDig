@@ -1866,6 +1866,23 @@ app.patch('/api/moderation/reports/:id/review', actionLimiter, isAuthenticated, 
 
 
 // =================================================================
+//  HEALTH CHECK ROUTE
+// =================================================================
+
+/**
+ * @route   GET /health
+ * @description Endpoint de comprobación de estado. Devuelve una respuesta 200 OK
+ * con un payload mínimo para verificar que el servidor está en línea.
+ * Ideal para servicios de monitoreo y "keep-alive".
+ * @access  Public
+ */
+app.get('/health', apiLimiter, (req, res) => {
+    // Usamos res.json() para establecer automáticamente el Content-Type a application/json
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+
+// =================================================================
 //  CATCH-ALL AND START SERVER
 // =================================================================
 

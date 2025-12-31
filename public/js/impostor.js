@@ -6,7 +6,7 @@
 let gameState = {
     players: [], // { name: "Juan", role: "impostor/player", isEliminated: false }
     config: {
-        impostorCount: 1,
+        impostorCount: 1, // Se actualizará tras la primera partida
         categories: []
     },
     secretWord: '',
@@ -21,13 +21,18 @@ async function initImpostorGame() {
     renderConfigurationPhase();
 }
 
-// --- FASE 1: CONFIGURACIÓN (Actualizada) ---
+// --- FASE 1: CONFIGURACIÓN (Actualizada con Persistencia) ---
 function renderConfigurationPhase() {
     const container = document.getElementById('game-container');
     
-    // Valores iniciales
-    const initialPlayers = 4;
-    const initialImpostors = 1;
+    // 1. Lógica de Persistencia:
+    // Si ya hay jugadores en gameState (venimos de una partida), usamos esa cantidad.
+    // Si no, por defecto 4.
+    const savedPlayerCount = gameState.players.length > 0 ? gameState.players.length : 4;
+    
+    // Si ya hay una configuración de impostores guardada y válida, la usamos.
+    // Si no, por defecto 1.
+    const savedImpostorCount = gameState.config.impostorCount > 0 ? gameState.config.impostorCount : 1;
 
     container.innerHTML = `
         <div class="game-phase animate-fade-in">
@@ -35,28 +40,29 @@ function renderConfigurationPhase() {
             <form id="game-config-form">
                 
                 <div class="form-group range-group">
-                    <label>Número de Jugadores: <span id="players-val" class="highlight-val">${initialPlayers}</span></label>
-                    <input type="range" id="num-players" min="3" max="10" value="${initialPlayers}" class="slider">
+                    <label>Número de Jugadores: <span id="players-val" class="highlight-val">${savedPlayerCount}</span></label>
+                    <input type="range" id="num-players" min="3" max="10" value="${savedPlayerCount}" class="slider">
                 </div>
                 
                 <div id="player-names-container" class="names-grid"></div>
                 
                 <div class="form-group range-group">
-                    <label>Número de Impostores: <span id="impostors-val" class="highlight-val">${initialImpostors}</span></label>
-                    <input type="range" id="num-impostors" min="1" max="5" value="${initialImpostors}" class="slider">
+                    <label>Número de Impostores: <span id="impostors-val" class="highlight-val">${savedImpostorCount}</span></label>
+                    <input type="range" id="num-impostors" min="1" max="5" value="${savedImpostorCount}" class="slider">
                 </div>
 
                 <div class="form-group">
                     <label>Categorías</label>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="category" value="Comida" checked> Comida</label>
-                        <label><input type="checkbox" name="category" value="Objetos" checked> Objetos</label>
+                        <label><input type="checkbox" name="category" value="Acciones" checked> Acciones</label>
                         <label><input type="checkbox" name="category" value="Animales" checked> Animales</label>
+                        <label><input type="checkbox" name="category" value="Comida" checked> Comida</label>
                         <label><input type="checkbox" name="category" value="Lugar" checked> Lugar</label>
+                        <label><input type="checkbox" name="category" value="Objetos" checked> Objetos</label>
                     </div>
                 </div>
                 <p id="game-error" class="error-text hidden"></p>
-                <button type="submit" class="button-primary">Siguiente</button>
+                <button type="submit" class="button-primary center">Siguiente</button>
             </form>
         </div>
     `;
@@ -70,9 +76,9 @@ function renderConfigurationPhase() {
     const namesContainer = document.getElementById('player-names-container');
 
     const generateNameInputs = (num) => {
-        // Guardamos nombres actuales para no perderlos al redibujar
+        // Guardamos nombres actuales del DOM para no perderlos si el usuario mueve el slider rápido
         const currentInputs = document.querySelectorAll('.player-name-input');
-        const currentNames = Array.from(currentInputs).map(i => i.value);
+        const currentNamesFromDom = Array.from(currentInputs).map(i => i.value);
 
         namesContainer.innerHTML = '';
         for (let i = 0; i < num; i++) {
@@ -80,25 +86,30 @@ function renderConfigurationPhase() {
             input.type = 'text';
             input.placeholder = `Jugador ${i + 1}`;
             input.required = true;
-            input.value = currentNames[i] || gameState.players[i]?.name || ''; 
+            // Prioridad: 1. Lo que acaba de escribir (DOM) -> 2. Lo guardado en memoria (gameState) -> 3. Vacío
+            input.value = currentNamesFromDom[i] || gameState.players[i]?.name || ''; 
             input.className = 'player-name-input';
             namesContainer.appendChild(input);
+        }
+    };
+
+    // Función auxiliar para recalcular límites de impostores
+    const updateImpostorLimits = (playerCount) => {
+        const maxImpostors = Math.max(1, Math.floor(playerCount / 2));
+        numImpostorsInput.max = maxImpostors;
+        
+        // Si el valor actual excede el nuevo máximo, lo corregimos
+        if (parseInt(numImpostorsInput.value) > maxImpostors) {
+            numImpostorsInput.value = maxImpostors;
+            impostorsValDisplay.textContent = maxImpostors;
         }
     };
 
     // Event Listener para Slider de Jugadores
     numPlayersInput.addEventListener('input', (e) => {
         const val = parseInt(e.target.value);
-        playersValDisplay.textContent = val; // Actualizar número visual
-        
-        // Ajustar el máximo de impostores dinámicamente para que tenga sentido
-        const maxImpostors = Math.max(1, Math.floor(val / 2));
-        numImpostorsInput.max = maxImpostors;
-        if (parseInt(numImpostorsInput.value) > maxImpostors) {
-            numImpostorsInput.value = maxImpostors;
-            impostorsValDisplay.textContent = maxImpostors;
-        }
-
+        playersValDisplay.textContent = val;
+        updateImpostorLimits(val);
         generateNameInputs(val);
     });
 
@@ -107,22 +118,26 @@ function renderConfigurationPhase() {
         impostorsValDisplay.textContent = e.target.value;
     });
 
-    // Inicializar inputs
-    generateNameInputs(parseInt(numPlayersInput.value));
+    // --- INICIALIZACIÓN DE ESTADO ---
+    // 1. Generar inputs iniciales
+    generateNameInputs(savedPlayerCount);
+    // 2. Asegurar que el slider de impostores respeta la lógica (ej: si hay 3 jugadores, max 1 impostor)
+    updateImpostorLimits(savedPlayerCount);
 
-    // El resto del listener del 'submit' se mantiene igual, 
-    // pero recuerda quitar la validación de rango manual ya que el slider lo controla
+
+    // --- MANEJO DEL SUBMIT ---
     document.getElementById('game-config-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const errorEl = document.getElementById('game-error');
         errorEl.classList.add('hidden');
 
         const inputs = document.querySelectorAll('.player-name-input');
+        // Sanitización básica: trim() de los nombres
         const names = Array.from(inputs).map(input => input.value.trim());
-        const impostorCount = parseInt(numImpostorsInput.value); // Usar referencia actualizada
+        const impostorCount = parseInt(numImpostorsInput.value);
         const categories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
 
-        // Validación extra de seguridad
+        // Validaciones de Seguridad y Lógica
         if (impostorCount >= names.length) {
             errorEl.textContent = 'Debe haber más jugadores que impostores.';
             errorEl.classList.remove('hidden');
@@ -134,8 +149,6 @@ function renderConfigurationPhase() {
             return;
         }
 
-        // ... (resto de la lógica de fetch y asignación de roles igual que tu archivo original) ...
-        // INICIO DEL BLOQUE ORIGINAL DE FETCH (copiar y pegar tu lógica existente aquí)
         try {
             const response = await fetch('/api/games/impostor/init', {
                 method: 'POST',
@@ -146,12 +159,16 @@ function renderConfigurationPhase() {
             if (!response.ok) throw new Error('Error al conectar con el servidor.');
             const data = await response.json();
 
+            // ACTUALIZACIÓN DEL STATE GLOBAL
             gameState.config.impostorCount = impostorCount;
             gameState.secretWord = data.word;
             gameState.impostorHint = data.impostorHint;
             gameState.currentCategory = data.category;
             
+            // Reiniciar estado de jugadores manteniendo nombres
             gameState.players = names.map(name => ({ name, role: 'player', isEliminated: false }));
+            
+            // Asignación de Roles (Algoritmo Fisher-Yates simplificado)
             let impostorsAssigned = 0;
             while (impostorsAssigned < impostorCount) {
                 const idx = Math.floor(Math.random() * gameState.players.length);
@@ -163,7 +180,8 @@ function renderConfigurationPhase() {
             renderPresentationPhase(0);
 
         } catch (error) {
-            errorEl.textContent = error.message;
+            console.error(error);
+            errorEl.textContent = error.message || 'Error desconocido';
             errorEl.classList.remove('hidden');
         }
     });
@@ -174,20 +192,24 @@ function renderPresentationPhase(playerIndex) {
     const container = document.getElementById('game-container');
     
     if (playerIndex >= gameState.players.length) {
-        // Fin de presentaciones, empezar juego
         gameState.startTime = new Date();
-        renderVotingPhase(1); // Ronda 1
+        renderVotingPhase(1); 
         return;
     }
 
     const player = gameState.players[playerIndex];
     const isImpostor = player.role === 'impostor';
-    const secretText = isImpostor ? `Eres el IMPOSTOR<br><strong>Pista: ${gameState.impostorHint}</strong>` : `Palabra:<br><strong>${gameState.secretWord}</strong>`;
+    
+    // Sanitización HTML en el output para prevenir inyección si el nombre contiene caracteres especiales
+    // (Aunque los inputs son controlados, es buena práctica de defensa en profundidad)
+    const secretText = isImpostor 
+        ? `Eres el IMPOSTOR<br><br>Pista:<strong> ${gameState.impostorHint}</strong>` 
+        : `Palabra:<br><strong>${gameState.secretWord}</strong>`;
     const roleClass = isImpostor ? 'role-impostor' : 'role-player';
 
     container.innerHTML = `
         <div class="game-phase center-text animate-fade-in">
-            <h3>Turno de: ${player.name}</h3>
+            <h3>Turno de: <span class="safe-name">${player.name}</span></h3>
             
             <div class="card-container" id="game-card">
                 <div class="card-inner">
@@ -229,32 +251,33 @@ function renderVotingPhase(roundNumber) {
     const container = document.getElementById('game-container');
     const activePlayers = gameState.players.filter(p => !p.isEliminated);
     
-    // Verificar condiciones de victoria antes de votar
     const activeImpostors = activePlayers.filter(p => p.role === 'impostor').length;
-    const activeCivilians = activePlayers.length - activeImpostors;
 
+    // Condiciones de Victoria/Derrota
     if (activeImpostors === 0) {
-        renderResults('Jugadores'); // Ganan los jugadores
+        renderResults('Jugadores'); 
         return;
     }
-    // Si quedan igual o menos civiles que impostores, ganan impostores (opcional, simplificado aquí se juega hasta expulsar N veces)
+    // Si quedan igual o menos civiles que impostores (o se acaban las rondas)
     if (roundNumber > gameState.config.impostorCount) {
-         // Se acabaron las rondas de votación
          if (activeImpostors > 0) renderResults('Impostores');
          else renderResults('Jugadores');
          return;
     }
 
     let html = `
-        <div class="game-phase animate-fade-in">
+        <div class="game-phase animate-fade-in center-text">
             <h2>Fase de Votación (Ronda ${roundNumber}/${gameState.config.impostorCount})</h2>
             <p>Debatid y votad a quién expulsar.</p>
             <div class="voting-grid">
     `;
 
-    activePlayers.forEach((player, idx) => {
+    // Generamos botones usando data attributes para evitar problemas de closure
+    activePlayers.forEach((player) => {
+        // Escapamos comillas en el nombre para no romper el HTML
+        const safeName = player.name.replace(/"/g, '&quot;');
         html += `
-            <button class="vote-card" data-name="${player.name}">
+            <button class="vote-card" data-name="${safeName}">
                 ${player.name}
             </button>
         `;
@@ -295,7 +318,6 @@ function handleExpulsion(name, roundNumber) {
     `;
 
     document.getElementById('next-round-btn').addEventListener('click', () => {
-        // Verificar victoria inmediata
         const remainingImpostors = gameState.players.filter(p => p.role === 'impostor' && !p.isEliminated).length;
         if (remainingImpostors === 0) {
             renderResults('Jugadores');
@@ -318,7 +340,7 @@ function renderResults(winner) {
         .map(p => `<li>${p.name}</li>`)
         .join('');
 
-    const winClass = winner === 'Jugadores' ? 'success-text' : 'error-text';
+    const winClass = winner === 'Jugadores' ? 'victory-player' : 'victory-impostor';
 
     container.innerHTML = `
         <div class="game-phase center-text animate-fade-in">
@@ -336,7 +358,7 @@ function renderResults(winner) {
     `;
 
     document.getElementById('play-again-btn').addEventListener('click', () => {
-        // Reset parcial (mantenemos nombres y config)
+        // Reset parcial para nueva partida
         gameState.players.forEach(p => p.isEliminated = false);
         gameState.impostorsFound = 0;
         renderConfigurationPhase();

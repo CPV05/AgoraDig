@@ -1,9 +1,29 @@
 /**
  * @file games.css
- * @description Estilos específicos para la sección de juegos y El Impostor.
+ * @description Estilos optimizados para la sección de juegos y El Impostor.
  */
 
-/* Menu de Juegos */
+/* =========================================
+   VARIABLES & CONFIGURACIÓN
+   ========================================= */
+/* Definimos colores semánticos locales para facilitar el mantenimiento */
+#game-container {
+    --game-impostor-color: #ff4444;
+    --game-player-color: #44aaff;
+    --game-card-bg: var(--color-fondo-input);
+}
+
+/* Ajustes automáticos de color para Modo Claro (Light Mode) */
+/* Al cambiar las variables aquí, se actualizan en todos los elementos hijos automáticamente */
+body:not(.night-mode) #game-container {
+    --game-impostor-color: #cc0000;
+    --game-player-color: #0066cc;
+    --game-card-bg: #fff; /* Fondo específico para cartas en modo claro */
+}
+
+/* =========================================
+   MENU DE JUEGOS
+   ========================================= */
 .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -17,9 +37,9 @@
     border-radius: 12px;
     padding: 1.5rem;
     text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-decoration: none;
     color: var(--color-texto);
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .game-card-entry:hover {
@@ -34,14 +54,16 @@
     display: block;
 }
 
-/* El Impostor - General */
+/* =========================================
+   EL IMPOSTOR - GENERAL
+   ========================================= */
 #game-container {
     max-width: 600px;
     margin: 0 auto;
     padding: 1rem;
 }
 
-/* --- Estilos para Sliders --- */
+/* --- Sliders --- */
 .range-group {
     text-align: left;
     margin-bottom: 1.5rem;
@@ -61,6 +83,7 @@
 
 .slider {
     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     height: 8px;
     border-radius: 5px;
@@ -69,6 +92,7 @@
     transition: background .2s;
 }
 
+/* Mixin para thumb del slider (Chrome/Safari/Edge) */
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -80,16 +104,17 @@
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
+/* Mixin para thumb del slider (Firefox) */
 .slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
     border-radius: 50%;
     background: var(--color-enlace);
     cursor: pointer;
+    border: none;
 }
 
-/* --- Fin Estilos Sliders --- */
-
+/* --- Selección de Nombres y Categorías --- */
 .names-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -104,7 +129,9 @@
     justify-content: center;
 }
 
-/* El Impostor - Carta */
+/* =========================================
+   CARTAS (FLIP ANIMATION)
+   ========================================= */
 .card-container {
     width: 280px;
     height: 380px;
@@ -128,14 +155,11 @@
     transform: rotateY(180deg);
 }
 
-/* MODIFICADO: Centrado absoluto estricto y background base */
+/* Estilos compartidos Frente/Dorso */
 .card-front, .card-back {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;      /* Importante para el centrado */
-    left: 0;     /* Importante para el centrado */
-    margin: 0;   /* Eliminar márgenes residuales */
+    inset: 0; /* Propiedad moderna: reemplaza top:0, left:0, w:100%, h:100% */
+    margin: 0;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: 15px;
@@ -145,50 +169,68 @@
     align-items: center;
     padding: 20px;
     border: 2px solid var(--color-borde);
-    background-color: var(--color-fondo-input); /* Fondo neutro por defecto */
+    background-color: var(--color-fondo-input);
     box-sizing: border-box;
+    font-size: 1.2rem;
+    line-height: 1.5;
 }
 
 .card-front {
-    /* Mantenemos un gradiente sutil solo para la portada (opcional) */
     background: linear-gradient(135deg, var(--color-fondo-input) 0%, var(--color-borde) 100%);
 }
 
 .card-back {
     transform: rotateY(180deg);
-    /* Ya no tiene color de fondo específico aquí, lo hereda del neutro */
 }
 
 .card-icon {
-    font-size: 5rem;
+    font-size: 6rem;
     color: var(--color-texto-secundario);
 }
 
-/* MODIFICADO: Colores neutros de fondo para roles */
-.role-impostor {
-    background-color: var(--color-fondo-input); /* Neutro */
-    color: #ff4444; /* Rojo solo en texto */
-    border-color: #ff4444;
+/* Contenido de la carta trasera */
+.card-back p { font-size: 1.5rem; margin-bottom: 1rem; }
+.card-back strong {
+    display: block;
+    font-size: 2rem;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.role-player {
-    background-color: var(--color-fondo-input); /* Neutro */
-    color: #44aaff; /* Azul solo en texto */
-    border-color: #44aaff;
+/* =========================================
+   ESTILOS DE ROLES Y VICTORIA (UNIFICADOS)
+   ========================================= */
+
+/* IMPOSTOR (Rojo) - Aplica a Carta, Texto Victoria y Pista */
+.role-impostor,
+.victory-impostor,
+.role-impostor strong {
+    color: var(--game-impostor-color);
+    border-color: var(--game-impostor-color); /* Solo visible si el elemento tiene borde definido */
 }
 
-/* Modo claro ajustes (Solo texto) */
-body:not(.night-mode) .role-impostor {
-    background-color: #fff; /* Neutro claro */
-    color: #cc0000;
+/* JUGADOR (Azul) - Aplica a Carta, Texto Victoria y Palabra */
+.role-player,
+.victory-player,
+.role-player strong {
+    color: var(--game-player-color);
+    border-color: var(--game-player-color);
 }
 
-body:not(.night-mode) .role-player {
-    background-color: #fff; /* Neutro claro */
-    color: #0066cc;
+/* Fondo específico para roles (Variable dinámica) */
+.role-impostor, .role-player {
+    background-color: var(--game-card-bg);
 }
 
-/* Votación */
+/* Sombras específicas para textos de victoria */
+.victory-impostor { text-shadow: 0 0 10px rgba(255, 68, 68, 0.2); }
+.victory-player   { text-shadow: 0 0 10px rgba(68, 170, 255, 0.2); }
+
+
+/* =========================================
+   VOTACIÓN Y RESULTADOS
+   ========================================= */
 .voting-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

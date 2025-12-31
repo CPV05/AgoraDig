@@ -41,6 +41,55 @@
     padding: 1rem;
 }
 
+/* --- Estilos para Sliders --- */
+.range-group {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.range-group label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.highlight-val {
+    color: var(--color-enlace);
+    font-size: 1.2rem;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: var(--color-borde);
+    outline: none;
+    transition: background .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-enlace);
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-enlace);
+    cursor: pointer;
+}
+
+/* --- Fin Estilos Sliders --- */
+
 .names-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -79,10 +128,14 @@
     transform: rotateY(180deg);
 }
 
+/* MODIFICADO: Centrado absoluto estricto y background base */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
+    top: 0;      /* Importante para el centrado */
+    left: 0;     /* Importante para el centrado */
+    margin: 0;   /* Eliminar márgenes residuales */
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: 15px;
@@ -92,15 +145,18 @@
     align-items: center;
     padding: 20px;
     border: 2px solid var(--color-borde);
-    background-color: var(--color-fondo-input);
+    background-color: var(--color-fondo-input); /* Fondo neutro por defecto */
+    box-sizing: border-box;
 }
 
 .card-front {
+    /* Mantenemos un gradiente sutil solo para la portada (opcional) */
     background: linear-gradient(135deg, var(--color-fondo-input) 0%, var(--color-borde) 100%);
 }
 
 .card-back {
     transform: rotateY(180deg);
+    /* Ya no tiene color de fondo específico aquí, lo hereda del neutro */
 }
 
 .card-icon {
@@ -108,27 +164,28 @@
     color: var(--color-texto-secundario);
 }
 
+/* MODIFICADO: Colores neutros de fondo para roles */
 .role-impostor {
-    background-color: #3f1818; /* Rojo oscuro para dark mode */
-    color: #ffcccc;
+    background-color: var(--color-fondo-input); /* Neutro */
+    color: #ff4444; /* Rojo solo en texto */
     border-color: #ff4444;
 }
 
 .role-player {
-    background-color: #182f3f; /* Azul oscuro para dark mode */
-    color: #ccefff;
+    background-color: var(--color-fondo-input); /* Neutro */
+    color: #44aaff; /* Azul solo en texto */
     border-color: #44aaff;
 }
 
-/* Modo claro ajustes */
+/* Modo claro ajustes (Solo texto) */
 body:not(.night-mode) .role-impostor {
-    background-color: #ffe6e6;
-    color: #990000;
+    background-color: #fff; /* Neutro claro */
+    color: #cc0000;
 }
 
 body:not(.night-mode) .role-player {
-    background-color: #e6f7ff;
-    color: #004499;
+    background-color: #fff; /* Neutro claro */
+    color: #0066cc;
 }
 
 /* Votación */

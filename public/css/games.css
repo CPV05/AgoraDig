@@ -1,0 +1,162 @@
+/**
+ * @file games.css
+ * @description Estilos específicos para la sección de juegos y El Impostor.
+ */
+
+/* Menu de Juegos */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.game-card-entry {
+    background-color: var(--color-fondo-input);
+    border: 1px solid var(--color-borde);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: var(--color-texto);
+}
+
+.game-card-entry:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--color-sombra-tarjeta-hover);
+    border-color: var(--color-enlace);
+}
+
+.game-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* El Impostor - General */
+#game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.names-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* El Impostor - Carta */
+.card-container {
+    width: 280px;
+    height: 380px;
+    margin: 2rem auto;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px var(--color-sombra-tarjeta);
+    border-radius: 15px;
+}
+
+.card-container.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid var(--color-borde);
+    background-color: var(--color-fondo-input);
+}
+
+.card-front {
+    background: linear-gradient(135deg, var(--color-fondo-input) 0%, var(--color-borde) 100%);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}
+
+.card-icon {
+    font-size: 5rem;
+    color: var(--color-texto-secundario);
+}
+
+.role-impostor {
+    background-color: #3f1818; /* Rojo oscuro para dark mode */
+    color: #ffcccc;
+    border-color: #ff4444;
+}
+
+.role-player {
+    background-color: #182f3f; /* Azul oscuro para dark mode */
+    color: #ccefff;
+    border-color: #44aaff;
+}
+
+/* Modo claro ajustes */
+body:not(.night-mode) .role-impostor {
+    background-color: #ffe6e6;
+    color: #990000;
+}
+
+body:not(.night-mode) .role-player {
+    background-color: #e6f7ff;
+    color: #004499;
+}
+
+/* Votación */
+.voting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.vote-card {
+    background: var(--color-fondo-input);
+    border: 2px solid var(--color-borde);
+    padding: 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--color-texto);
+    transition: all 0.2s;
+}
+
+.vote-card:hover {
+    border-color: var(--color-enlace);
+    background-color: var(--color-foco-primario);
+}
+
+.impostor-list-ul {
+    list-style: none;
+    padding: 0;
+    font-size: 1.2rem;
+}

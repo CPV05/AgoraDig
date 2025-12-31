@@ -710,11 +710,13 @@ async function loadAndExecuteScript(templatePath) {
         '/templates/register.html': './js/register.js',
         '/templates/login.html': './js/login.js',
         '/templates/profile.html': './js/profile.js',
+        '/templates/impostor.html': './js/impostor.js'
     };
     const initFunctionMap = {
         '/templates/register.html': () => { if (typeof initRegisterForm === 'function') initRegisterForm(); },
         '/templates/login.html': () => { if (typeof initLoginForm === 'function') initLoginForm(); },
         '/templates/profile.html': () => { if (typeof initProfilePage === 'function') initProfilePage(); },
+        '/templates/impostor.html': () => { if (typeof initImpostorGame === 'function') initImpostorGame(); }
     };
 
     const scriptSrc = scriptMap[templatePath];
@@ -1350,6 +1352,19 @@ async function renderPage(path) {
         templatePath = '/templates/contact.html';
         document.title = 'Contacto';
         cssPaths = ['/css/forms.css'];
+        await loadViewCss(cssPaths);
+    } else if (pathname === '/games') {
+        templatePath = '/templates/games.html';
+        document.title = 'Juegos - AgoraDig';
+        cssPaths = ['/css/games.css'];
+        await loadViewCss(cssPaths);
+    } else if (pathname === '/games/impostor') {
+        // SEGURIDAD: Verificar autenticación antes de cargar el juego
+        const isAuthenticated = await checkAuth();
+        if (!isAuthenticated) return;
+        templatePath = '/templates/impostor.html';
+        document.title = 'El Impostor - Jugando';
+        cssPaths = ['/css/games.css', '/css/forms.css'];
         await loadViewCss(cssPaths);
     } else if (pathname === '/register') {
         templatePath = '/templates/register.html';

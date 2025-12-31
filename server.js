@@ -402,6 +402,82 @@ messageSchema.virtual('replyCount').get(function() { return this.replies.length;
 
 const Message = messagesDbConnection.model('Message', messageSchema);
 
+/**
+ * @description Esquema para las palabras del juego El Impostor.
+ * Almacenado en la BD de mensajes para separación de intereses.
+ */
+const gameWordSchema = new mongoose.Schema({
+    category: { type: String, required: true, enum: ['Comida', 'Objetos', 'Animales', 'Lugar'], index: true },
+    word: { type: String, required: true },
+    impostorHint: { type: String, required: true } // Pista genérica o específica para el impostor
+});
+
+const GameWord = messagesDbConnection.model('GameWord', gameWordSchema);
+
+// --- SEEDER INICIAL (Opcional: Ejecutar una vez si la BD está vacía) ---
+const seedGameWords = async () => {
+    const count = await GameWord.countDocuments();
+    if (count === 0) {
+        const initialWords = [
+                // --- COMIDA ---
+                // Estrategia: Platos similares o ingredientes sustitutos
+                { category: 'Comida', word: 'Pizza', impostorHint: 'Lasaña' },        // Ambos italianos, con salsa y queso
+                { category: 'Comida', word: 'Sushi', impostorHint: 'Ceviche' },       // Ambos pescado crudo/marinado
+                { category: 'Comida', word: 'Hamburguesa', impostorHint: 'Sandwich' },// Ambos pan con relleno
+                { category: 'Comida', word: 'Paella', impostorHint: 'Risotto' },      // Ambos base de arroz
+                { category: 'Comida', word: 'Tacos', impostorHint: 'Burrito' },       // Ambos mexicanos con tortilla
+                { category: 'Comida', word: 'Helado', impostorHint: 'Yogur' },        // Ambos lácteos fríos/cremosos
+                { category: 'Comida', word: 'Chocolate', impostorHint: 'Caramelo' },  // Ambos dulces golosina
+                { category: 'Comida', word: 'Ensalada', impostorHint: 'Sopa' },       // Ambos entrantes ligeros
+                { category: 'Comida', word: 'Huevo', impostorHint: 'Leche' },         // Ambos básicos de origen animal
+                { category: 'Comida', word: 'Pan', impostorHint: 'Galleta' },         // Ambos harina horneada
+
+                // --- OBJETOS ---
+                // Estrategia: Objetos con funciones similares pero forma distinta
+                { category: 'Objetos', word: 'Silla', impostorHint: 'Taburete' },     // Ambos para sentarse
+                { category: 'Objetos', word: 'Teléfono', impostorHint: 'Tablet' },    // Ambos pantallas táctiles
+                { category: 'Objetos', word: 'Reloj', impostorHint: 'Brújula' },      // Ambos instrumentos de medida redondos
+                { category: 'Objetos', word: 'Libro', impostorHint: 'Revista' },      // Ambos papel para leer
+                { category: 'Objetos', word: 'Llave', impostorHint: 'Contraseña' },   // Ambos para abrir/acceder
+                { category: 'Objetos', word: 'Gafas', impostorHint: 'Prismáticos' },  // Ambos lentes para ver mejor
+                { category: 'Objetos', word: 'Mochila', impostorHint: 'Maleta' },     // Ambos para transportar cosas
+                { category: 'Objetos', word: 'Cuchara', impostorHint: 'Tenedor' },    // Ambos cubiertos de metal
+                { category: 'Objetos', word: 'Cama', impostorHint: 'Sofá' },          // Ambos muebles acolchados
+                { category: 'Objetos', word: 'Espejo', impostorHint: 'Retrato' },     // Ambos muestran una imagen
+
+                // --- ANIMALES ---
+                // Estrategia: Animales del mismo hábitat o morfología
+                { category: 'Animales', word: 'Elefante', impostorHint: 'Rinoceronte' }, // Ambos grandes, grises y piel dura
+                { category: 'Animales', word: 'Perro', impostorHint: 'Lobo' },           // Cánidos similares
+                { category: 'Animales', word: 'Gato', impostorHint: 'Tigre' },           // Felinos
+                { category: 'Animales', word: 'Delfín', impostorHint: 'Tiburón' },       // Ambos reyes del mar (uno mamífero, otro pez)
+                { category: 'Animales', word: 'León', impostorHint: 'Leopardo' },        // Depredadores africanos
+                { category: 'Animales', word: 'Pingüino', impostorHint: 'Pato' },        // Aves acuáticas
+                { category: 'Animales', word: 'Jirafa', impostorHint: 'Avestruz' },      // Ambos cuello largo/patas largas
+                { category: 'Animales', word: 'Tortuga', impostorHint: 'Caracol' },      // Ambos con caparazón y lentos
+                { category: 'Animales', word: 'Pájaro', impostorHint: 'Murciélago' },    // Ambos vuelan
+                { category: 'Animales', word: 'Serpiente', impostorHint: 'Gusano' },     // Ambos se arrastran/alargados
+
+                // --- LUGAR ---
+                // Estrategia: Ubicaciones que comparten atmósfera o propósito
+                { category: 'Lugar', word: 'Playa', impostorHint: 'Piscina' },        // Agua y baño
+                { category: 'Lugar', word: 'Montaña', impostorHint: 'Bosque' },       // Naturaleza y senderismo
+                { category: 'Lugar', word: 'Escuela', impostorHint: 'Biblioteca' },   // Libros y estudio
+                { category: 'Lugar', word: 'Hospital', impostorHint: 'Farmacia' },    // Salud y medicina
+                { category: 'Lugar', word: 'Cine', impostorHint: 'Teatro' },          // Espectáculo y butacas
+                { category: 'Lugar', word: 'Parque', impostorHint: 'Jardín' },        // Zonas verdes urbanas
+                { category: 'Lugar', word: 'Aeropuerto', impostorHint: 'Estación' },  // Transporte y maletas
+                { category: 'Lugar', word: 'Biblioteca', impostorHint: 'Librería' },  // Libros (uno presta, otro vende)
+                { category: 'Lugar', word: 'Gimnasio', impostorHint: 'Estadio' },     // Deporte
+                { category: 'Lugar', word: 'Bosque', impostorHint: 'Selva' }          // Árboles y vegetación
+            ];
+        await GameWord.insertMany(initialWords);
+        console.log('✅ Base de datos de juegos inicializada.');
+    }
+};
+// Llamar al seeder tras la conexión (puedes ponerlo en el evento 'connected' de messagesDbConnection)
+messagesDbConnection.on('connected', () => { seedGameWords(); });
+
 
 /**
  * @description Esquema de Mongoose para los tickets de contacto.
@@ -1720,6 +1796,39 @@ app.get('/api/search', apiLimiter, async (req, res) => {
     }
 });
 
+/**
+ * @route   POST /api/games/impostor/init
+ * @description Inicializa una partida obteniendo una palabra aleatoria basada en categorías.
+ * @access  Private
+ */
+app.post('/api/games/impostor/init', apiLimiter, isAuthenticated, async (req, res) => {
+    try {
+        const { categories } = req.body; // Array de categorías seleccionadas
+        
+        if (!categories || !Array.isArray(categories) || categories.length === 0) {
+            return res.status(400).json({ message: 'Debes seleccionar al menos una categoría.' });
+        }
+
+        // Obtener una palabra aleatoria que coincida con las categorías
+        const count = await GameWord.countDocuments({ category: { $in: categories } });
+        if (count === 0) {
+            return res.status(404).json({ message: 'No hay palabras disponibles para estas categorías.' });
+        }
+
+        const random = Math.floor(Math.random() * count);
+        const selectedWord = await GameWord.findOne({ category: { $in: categories } }).skip(random);
+
+        res.status(200).json({
+            category: selectedWord.category,
+            word: selectedWord.word,
+            impostorHint: selectedWord.impostorHint
+        });
+
+    } catch (error) {
+        console.error('Error en /api/games/impostor/init:', error);
+        res.status(500).json({ message: 'Error al iniciar la partida.' });
+    }
+});
 
 // =================================================================
 //  ADMIN & MODERATION ROUTES

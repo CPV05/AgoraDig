@@ -153,13 +153,12 @@ function renderPresentationPhase(playerIndex) {
 
     const player = gameState.players[playerIndex];
     const isImpostor = player.role === 'impostor';
-    const secretText = isImpostor ? `Eres el IMPOSTOR<br><small>Pista: ${gameState.impostorHint}</small>` : `Palabra:<br><strong>${gameState.secretWord}</strong>`;
+    const secretText = isImpostor ? `Eres el IMPOSTOR<br><strong>Pista: ${gameState.impostorHint}</strong>` : `Palabra:<br><strong>${gameState.secretWord}</strong>`;
     const roleClass = isImpostor ? 'role-impostor' : 'role-player';
 
     container.innerHTML = `
         <div class="game-phase center-text animate-fade-in">
             <h3>Turno de: ${player.name}</h3>
-            <p>Pasa el dispositivo a ${player.name}.</p>
             
             <div class="card-container" id="game-card">
                 <div class="card-inner">
@@ -169,7 +168,6 @@ function renderPresentationPhase(playerIndex) {
                     </div>
                     <div class="card-back ${roleClass}">
                         <p>${secretText}</p>
-                        <p class="category-hint">Categoría: ${gameState.currentCategory}</p>
                     </div>
                 </div>
             </div>

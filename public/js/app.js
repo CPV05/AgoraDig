@@ -707,10 +707,10 @@ async function loadAndExecuteScript(templatePath) {
     }
     
     const scriptMap = {
-        '/templates/register.html': './js/register.js',
-        '/templates/login.html': './js/login.js',
-        '/templates/profile.html': './js/profile.js',
-        '/templates/impostor.html': './js/impostor.js'
+        '/templates/register.html': '/js/register.js',
+        '/templates/login.html': '/js/login.js',
+        '/templates/profile.html': '/js/profile.js',
+        '/templates/impostor.html': '/js/impostor.js'
     };
     const initFunctionMap = {
         '/templates/register.html': () => { if (typeof initRegisterForm === 'function') initRegisterForm(); },
@@ -1359,13 +1359,21 @@ async function renderPage(path) {
         cssPaths = ['/css/games.css'];
         await loadViewCss(cssPaths);
     } else if (pathname === '/games/impostor') {
-        // SEGURIDAD: Verificar autenticación antes de cargar el juego
+        // SEGURIDAD: Verificar autenticación
         const isAuthenticated = await checkAuth();
-        if (!isAuthenticated) return;
+        
+        if (!isAuthenticated) {
+            // FIX: Debemos ocultar el loader antes de salir, o se quedará infinito.
+            loaderContainer.classList.add('hidden'); 
+            // Opcional: Redirigir explícitamente si checkAuth no lo hizo
+            return; 
+        }
+
         templatePath = '/templates/impostor.html';
         document.title = 'El Impostor - Jugando';
         cssPaths = ['/css/games.css', '/css/forms.css'];
         await loadViewCss(cssPaths);
+
     } else if (pathname === '/register') {
         templatePath = '/templates/register.html';
         document.title = 'Crear Cuenta';

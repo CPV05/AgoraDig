@@ -440,7 +440,6 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Acciones', word: 'Desfilar', impostorHint: 'Caminar' },           // Andar, pero con propósito exhibicionista
                 { gameType: 'impostor', category: 'Acciones', word: 'Abrazar', impostorHint: 'Luchar' },             // Cuerpos entrelazados (cariño vs judo)
                 { gameType: 'impostor', category: 'Acciones', word: 'Señalar', impostorHint: 'Disparar' },           // Apuntar con el dedo/arma
-                // Grupo 2: Conceptos abstractos o resultados colaterales
                 { gameType: 'impostor', category: 'Acciones', word: 'Pescar', impostorHint: 'Esperar' },             // La actividad principal de pescar es esperar
                 { gameType: 'impostor', category: 'Acciones', word: 'Cocinar', impostorHint: 'Mezclar' },            // Parte fundamental del proceso (química)
                 { gameType: 'impostor', category: 'Acciones', word: 'Pintar', impostorHint: 'Ensuciar' },            // Si pintas mal, solo manchas
@@ -451,7 +450,6 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Acciones', word: 'Comprar', impostorHint: 'Elegir' },             // El acto previo al pago
                 { gameType: 'impostor', category: 'Acciones', word: 'Trabajar', impostorHint: 'Cansarse' },          // Causa y efecto directo
                 { gameType: 'impostor', category: 'Acciones', word: 'Regalar', impostorHint: 'Perder' },             // Te quedas sin el objeto (técnicamente)
-                // Grupo 3: Manipulación de objetos y entorno
                 { gameType: 'impostor', category: 'Acciones', word: 'Barrer', impostorHint: 'Peinar' },              // Arrastrar cosas (pelo/polvo) para ordenarlas
                 { gameType: 'impostor', category: 'Acciones', word: 'Planchar', impostorHint: 'Acariciar' },         // Deslizar la mano/objeto suavemente sobre superficie
                 { gameType: 'impostor', category: 'Acciones', word: 'Coser', impostorHint: 'Operar' },               // Unir tejidos/piel con aguja
@@ -462,7 +460,6 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Acciones', word: 'Afeitarse', impostorHint: 'Pelar' },            // Quitar la capa superficial
                 { gameType: 'impostor', category: 'Acciones', word: 'Tejer', impostorHint: 'Programar' },            // Crear patrones complejos entrelazados (código/hilo)
                 { gameType: 'impostor', category: 'Acciones', word: 'Amarrar', impostorHint: 'Abrochar' },           // Asegurar algo para que no se suelte
-                // Grupo 4: Sentidos y Percepción (Relaciones confusas)
                 { gameType: 'impostor', category: 'Acciones', word: 'Oler', impostorHint: 'Respirar' },              // No puedes oler sin respirar
                 { gameType: 'impostor', category: 'Acciones', word: 'Espiar', impostorHint: 'Mirar' },               // Mirar, pero con secreto
                 { gameType: 'impostor', category: 'Acciones', word: 'Saborear', impostorHint: 'Lamer' },             // Uso de la lengua
@@ -473,6 +470,65 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Acciones', word: 'Temblar', impostorHint: 'Bailar' },             // Movimiento corporal involuntario vs voluntario
                 { gameType: 'impostor', category: 'Acciones', word: 'Tropezar', impostorHint: 'Bailar' },            // Movimiento raro de pies (chiste clásico de "no me caí, bailé")
                 { gameType: 'impostor', category: 'Acciones', word: 'Esconderse', impostorHint: 'Desaparecer' },     // El objetivo final es no ser visto
+                { gameType: 'impostor', category: 'Acciones', word: 'Correr', impostorHint: 'Escapar' },             // Acción rápida con un motivo urgente
+                { gameType: 'impostor', category: 'Acciones', word: 'Saltar', impostorHint: 'Volar' },               // Despegarse del suelo momentáneamente
+                { gameType: 'impostor', category: 'Acciones', word: 'Caer', impostorHint: 'Aterrizar' },             // Llegar al suelo (con o sin estilo)
+                { gameType: 'impostor', category: 'Acciones', word: 'Gatear', impostorHint: 'Rastrear' },            // Moverse a ras de suelo
+                { gameType: 'impostor', category: 'Acciones', word: 'Patinar', impostorHint: 'Resbalar' },           // Deslizarse sin control vs con control
+                { gameType: 'impostor', category: 'Acciones', word: 'Escalar', impostorHint: 'Subir' },              // Movimiento vertical
+                { gameType: 'impostor', category: 'Acciones', word: 'Cazar', impostorHint: 'Buscar' },               // Perseguir un objetivo
+                { gameType: 'impostor', category: 'Acciones', word: 'Robar', impostorHint: 'Encontrar' },            // Adquirir algo (método ético vs no ético)
+                { gameType: 'impostor', category: 'Acciones', word: 'Mentir', impostorHint: 'Actuar' },              // Crear una realidad falsa
+                { gameType: 'impostor', category: 'Acciones', word: 'Escuchar', impostorHint: 'Obedecer' },          // Prestar atención a una orden
+                { gameType: 'impostor', category: 'Acciones', word: 'Pensar', impostorHint: 'Calcular' },            // Proceso mental
+                { gameType: 'impostor', category: 'Acciones', word: 'Olvidar', impostorHint: 'Perder' },             // Dejar de tener algo (un recuerdo)
+                { gameType: 'impostor', category: 'Acciones', word: 'Recordar', impostorHint: 'Grabar' },            // Almacenar información
+                { gameType: 'impostor', category: 'Acciones', word: 'Preguntar', impostorHint: 'Dudar' },            // Buscar respuestas a una incertidumbre
+                { gameType: 'impostor', category: 'Acciones', word: 'Responder', impostorHint: 'Solucionar' },       // Dar el cierre a una duda
+                { gameType: 'impostor', category: 'Acciones', word: 'Romper', impostorHint: 'Dividir' },             // Separar en partes (violentamente)
+                { gameType: 'impostor', category: 'Acciones', word: 'Arreglar', impostorHint: 'Curar' },             // Restaurar el estado original
+                { gameType: 'impostor', category: 'Acciones', word: 'Mezclar', impostorHint: 'Confundir' },          // Unir cosas hasta que no se distinguen
+                { gameType: 'impostor', category: 'Acciones', word: 'Agitar', impostorHint: 'Saludar' },             // Movimiento rápido de vaivén
+                { gameType: 'impostor', category: 'Acciones', word: 'Empujar', impostorHint: 'Ayudar' },             // Dar impulso (físico o metafórico)
+                { gameType: 'impostor', category: 'Acciones', word: 'Tirar', impostorHint: 'Atraer' },               // Jalar hacia uno
+                { gameType: 'impostor', category: 'Acciones', word: 'Levantar', impostorHint: 'Despertar' },         // Ponerse de pie / salir del sueño
+                { gameType: 'impostor', category: 'Acciones', word: 'Soltar', impostorHint: 'Caer' },                // Dejar ir la gravedad
+                { gameType: 'impostor', category: 'Acciones', word: 'Atrapar', impostorHint: 'Abrazar' },            // Rodear con los brazos
+                { gameType: 'impostor', category: 'Acciones', word: 'Pelear', impostorHint: 'Discutir' },            // Conflicto (físico vs verbal)
+                { gameType: 'impostor', category: 'Acciones', word: 'Ganar', impostorHint: 'Terminar' },             // Fin del juego con éxito
+                { gameType: 'impostor', category: 'Acciones', word: 'Perder', impostorHint: 'Buscar' },              // Quedarse sin algo y querer recuperarlo
+                { gameType: 'impostor', category: 'Acciones', word: 'Nacer', impostorHint: 'Empezar' },              // El inicio de todo
+                { gameType: 'impostor', category: 'Acciones', word: 'Morir', impostorHint: 'Dormir' },               // Eufemismo clásico
+                { gameType: 'impostor', category: 'Acciones', word: 'Crecer', impostorHint: 'Estirarse' },           // Aumentar de tamaño
+                { gameType: 'impostor', category: 'Acciones', word: 'Envejecer', impostorHint: 'Madurar' },          // Paso del tiempo
+                { gameType: 'impostor', category: 'Acciones', word: 'Enfermar', impostorHint: 'Descansar' },         // Consecuencia obligada
+                { gameType: 'impostor', category: 'Acciones', word: 'Traducir', impostorHint: 'Explicar' },          // Cambiar de código para entender
+                { gameType: 'impostor', category: 'Acciones', word: 'Dibujar', impostorHint: 'Escribir' },           // Trazar líneas con significado
+                { gameType: 'impostor', category: 'Acciones', word: 'Borrar', impostorHint: 'Olvidar' },             // Eliminar el rastro
+                { gameType: 'impostor', category: 'Acciones', word: 'Imprimir', impostorHint: 'Copiar' },            // Plasmar en papel
+                { gameType: 'impostor', category: 'Acciones', word: 'Pegar', impostorHint: 'Golpear' },              // Adherir vs Agredir (polisemia)
+                { gameType: 'impostor', category: 'Acciones', word: 'Cortar', impostorHint: 'Separar' },             // Dividir con filo
+                { gameType: 'impostor', category: 'Acciones', word: 'Medir', impostorHint: 'Juzgar' },               // Evaluar el tamaño/valor
+                { gameType: 'impostor', category: 'Acciones', word: 'Pesar', impostorHint: 'Dudar' },                // Evaluar la masa / indecisión
+                { gameType: 'impostor', category: 'Acciones', word: 'Contar', impostorHint: 'Narrar' },              // Números vs Historias
+                { gameType: 'impostor', category: 'Acciones', word: 'Callar', impostorHint: 'Esconder' },            // Ocultar información/voz
+                { gameType: 'impostor', category: 'Acciones', word: 'Esperar', impostorHint: 'Aburrirse' },          // El sentimiento asociado a la espera
+                { gameType: 'impostor', category: 'Acciones', word: 'Acelerar', impostorHint: 'Correr' },            // Ir más rápido
+                { gameType: 'impostor', category: 'Acciones', word: 'Frenar', impostorHint: 'Parar' },               // Detener el movimiento
+                { gameType: 'impostor', category: 'Acciones', word: 'Aparcar', impostorHint: 'Guardar' },            // Dejar el coche en su sitio
+                { gameType: 'impostor', category: 'Acciones', word: 'Chocar', impostorHint: 'Tocar' },               // Contacto brusco
+                { gameType: 'impostor', category: 'Acciones', word: 'Volar', impostorHint: 'Caer' },                 // Caer con estilo (Toy Story)
+                { gameType: 'impostor', category: 'Acciones', word: 'Flotar', impostorHint: 'Nadar' },               // Mantenerse en superficie
+                { gameType: 'impostor', category: 'Acciones', word: 'Bucear', impostorHint: 'Aguantar la respiración' }, // Requisito principal
+                { gameType: 'impostor', category: 'Acciones', word: 'Firmar', impostorHint: 'Dibujar' },             // Hacer tu garabato personal
+                { gameType: 'impostor', category: 'Acciones', word: 'Votar', impostorHint: 'Elegir' },               // Decisión democrática
+                { gameType: 'impostor', category: 'Acciones', word: 'Rezar', impostorHint: 'Pedir' },                // Solicitar algo a una entidad superior
+                { gameType: 'impostor', category: 'Acciones', word: 'Pecar', impostorHint: 'Disfrutar' },            // Visión hedonista/irónica
+                { gameType: 'impostor', category: 'Acciones', word: 'Casarse', impostorHint: 'Prometer' },           // Contrato verbal/legal
+                { gameType: 'impostor', category: 'Acciones', word: 'Divorciarse', impostorHint: 'Romper' },         // Finalizar la unión
+                { gameType: 'impostor', category: 'Acciones', word: 'Mudarse', impostorHint: 'Empaquetar' },         // La parte tediosa del cambio de casa
+                { gameType: 'impostor', category: 'Acciones', word: 'Invitar', impostorHint: 'Pagar' },              // Implicación social
+                { gameType: 'impostor', category: 'Acciones', word: 'Celebrar', impostorHint: 'Beber' },             // Actividad común en fiestas
 
                 // --- ANIMALES ---
                 { gameType: 'impostor', category: 'Animales', word: 'Elefante', impostorHint: 'Rinoceronte' }, // Ambos grandes, grises y piel dura
@@ -515,6 +571,63 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Animales', word: 'Hipopótamo', impostorHint: 'Cerdo' },     // Aspecto rosado/gordito (aunque tamaños distintos)
                 { gameType: 'impostor', category: 'Animales', word: 'Estrella de mar', impostorHint: 'Estrella' }, // Forma compartida
                 { gameType: 'impostor', category: 'Animales', word: 'Gallo', impostorHint: 'Despertador' },    // Despiertan por la mañana
+                { gameType: 'impostor', category: 'Animales', word: 'Koala', impostorHint: 'Perezoso' },             // Animales lentos que abrazan árboles
+                { gameType: 'impostor', category: 'Animales', word: 'Panda', impostorHint: 'Bambú' },                // Su única comida
+                { gameType: 'impostor', category: 'Animales', word: 'Canguro', impostorHint: 'Bolso' },              // Por el marsupio
+                { gameType: 'impostor', category: 'Animales', word: 'Ornitorrinco', impostorHint: 'Puzzle' },        // Mezcla de partes de animales
+                { gameType: 'impostor', category: 'Animales', word: 'Camaleón', impostorHint: 'Semáforo' },          // Cambia de colores
+                { gameType: 'impostor', category: 'Animales', word: 'Hiena', impostorHint: 'Payaso' },               // Porque se "ríe"
+                { gameType: 'impostor', category: 'Animales', word: 'Pavo Real', impostorHint: 'Abanico' },          // Forma de la cola
+                { gameType: 'impostor', category: 'Animales', word: 'Flamenco', impostorHint: 'Gamba' },             // Son rosas porque comen gambas
+                { gameType: 'impostor', category: 'Animales', word: 'Tucán', impostorHint: 'Plátano' },              // Forma del pico grande y curvo
+                { gameType: 'impostor', category: 'Animales', word: 'Colibrí', impostorHint: 'Helicóptero' },        // Vuelo estático y rápido
+                { gameType: 'impostor', category: 'Animales', word: 'Topo', impostorHint: 'Minero' },                // Vive bajo tierra cavando
+                { gameType: 'impostor', category: 'Animales', word: 'Castor', impostorHint: 'Carpintero' },          // Trabaja con madera
+                { gameType: 'impostor', category: 'Animales', word: 'Mapache', impostorHint: 'Ladrón' },             // Antifaz y manos hábiles
+                { gameType: 'impostor', category: 'Animales', word: 'Mofeta', impostorHint: 'Perfume' },             // Ironía sobre el olor
+                { gameType: 'impostor', category: 'Animales', word: 'Llama', impostorHint: 'Alpaca' },               // Andinos parecidos
+                { gameType: 'impostor', category: 'Animales', word: 'Buitre', impostorHint: 'Basurero' },            // Limpian los restos
+                { gameType: 'impostor', category: 'Animales', word: 'Ciempiés', impostorHint: 'Tren' },              // Largo y con muchas "ruedas/patas"
+                { gameType: 'impostor', category: 'Animales', word: 'Luciérnaga', impostorHint: 'Bombilla' },        // Produce luz
+                { gameType: 'impostor', category: 'Animales', word: 'Grillo', impostorHint: 'Violín' },              // Hacen música frotando
+                { gameType: 'impostor', category: 'Animales', word: 'Saltamontes', impostorHint: 'Muelle' },         // Mecanismo de salto
+                { gameType: 'impostor', category: 'Animales', word: 'Mantis', impostorHint: 'Religiosa' },           // Postura de rezo
+                { gameType: 'impostor', category: 'Animales', word: 'Escarabajo', impostorHint: 'Tanque' },          // Acorazado
+                { gameType: 'impostor', category: 'Animales', word: 'Mariquita', impostorHint: 'Lunar' },            // Puntos negros
+                { gameType: 'impostor', category: 'Animales', word: 'Caracol', impostorHint: 'Espiral' },            // Forma de la concha
+                { gameType: 'impostor', category: 'Animales', word: 'Babosa', impostorHint: 'Moco' },                // Textura
+                { gameType: 'impostor', category: 'Animales', word: 'Lombriz', impostorHint: 'Espagueti' },          // Forma
+                { gameType: 'impostor', category: 'Animales', word: 'Medusa', impostorHint: 'Paracaídas' },          // Forma flotante
+                { gameType: 'impostor', category: 'Animales', word: 'Caballito de mar', impostorHint: 'Ajedrez' },   // Pieza del juego
+                { gameType: 'impostor', category: 'Animales', word: 'Anguila', impostorHint: 'Cable' },              // Forma y a veces electricidad
+                { gameType: 'impostor', category: 'Animales', word: 'Pez Globo', impostorHint: 'Pelota' },           // Se infla
+                { gameType: 'impostor', category: 'Animales', word: 'Pez Espada', impostorHint: 'Pincho' },          // Nariz afilada
+                { gameType: 'impostor', category: 'Animales', word: 'Trucha', impostorHint: 'Salmón' },              // Peces de río
+                { gameType: 'impostor', category: 'Animales', word: 'Atún', impostorHint: 'Lata' },                  // Donde solemos verlo
+                { gameType: 'impostor', category: 'Animales', word: 'Orca', impostorHint: 'Panda' },                 // Blanco y negro, pero en el mar
+                { gameType: 'impostor', category: 'Animales', word: 'Nutria', impostorHint: 'Piedra' },              // Juegan con piedras
+                { gameType: 'impostor', category: 'Animales', word: 'Salamandra', impostorHint: 'Fuego' },           // Mito clásico
+                { gameType: 'impostor', category: 'Animales', word: 'Iguana', impostorHint: 'Estatua' },             // Se quedan muy quietas
+                { gameType: 'impostor', category: 'Animales', word: 'Gecko', impostorHint: 'Ventosa' },              // Se pegan a paredes
+                { gameType: 'impostor', category: 'Animales', word: 'Boa', impostorHint: 'Bufanda' },                // Se enrolla al cuello
+                { gameType: 'impostor', category: 'Animales', word: 'Cobra', impostorHint: 'Capucha' },              // Forma de la cabeza
+                { gameType: 'impostor', category: 'Animales', word: 'Tarántula', impostorHint: 'Peluche' },          // Peluda (aunque da miedo)
+                { gameType: 'impostor', category: 'Animales', word: 'Viuda Negra', impostorHint: 'Reloj de arena' }, // Marca roja en su cuerpo
+                { gameType: 'impostor', category: 'Animales', word: 'Cisne', impostorHint: 'Cuello' },               // Rasgo distintivo
+                { gameType: 'impostor', category: 'Animales', word: 'Gaviota', impostorHint: 'Playa' },              // Hábitat ruidoso
+                { gameType: 'impostor', category: 'Animales', word: 'Paloma', impostorHint: 'Rata' },                // "Ratas del aire" (broma urbana)
+                { gameType: 'impostor', category: 'Animales', word: 'Cuervo', impostorHint: 'Luto' },                // Color negro y simbolismo
+                { gameType: 'impostor', category: 'Animales', word: 'Canario', impostorHint: 'Mina' },               // Usados para detectar gas
+                { gameType: 'impostor', category: 'Animales', word: 'Avestruz', impostorHint: 'Huevo' },             // Ponen los más grandes
+                { gameType: 'impostor', category: 'Animales', word: 'Kiwi', impostorHint: 'Fruta' },                 // Comparten nombre y forma redonda/peluda
+                { gameType: 'impostor', category: 'Animales', word: 'Mamut', impostorHint: 'Elefante' },             // Ancestro lanudo
+                { gameType: 'impostor', category: 'Animales', word: 'Dinosaurio', impostorHint: 'Meteorito' },       // Su final
+                { gameType: 'impostor', category: 'Animales', word: 'Dragón', impostorHint: 'Fuego' },               // Criatura mitológica
+                { gameType: 'impostor', category: 'Animales', word: 'Unicornio', impostorHint: 'Caballo' },          // Caballo con cuerno
+                { gameType: 'impostor', category: 'Animales', word: 'Fénix', impostorHint: 'Ceniza' },               // Renace de ahí
+                { gameType: 'impostor', category: 'Animales', word: 'Centauro', impostorHint: 'Jinete' },            // Mitad hombre mitad caballo
+                { gameType: 'impostor', category: 'Animales', word: 'Sirena', impostorHint: 'Pez' },                 // Mitad mujer mitad pez
+                { gameType: 'impostor', category: 'Animales', word: 'Hombre Lobo', impostorHint: 'Luna' },           // Transformación
 
                 // --- LUGAR ---
                 { gameType: 'impostor', category: 'Lugar', word: 'Playa', impostorHint: 'Piscina' },        // Agua y baño
@@ -557,6 +670,66 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Lugar', word: 'Estanque', impostorHint: 'Lago' },        // Cuerpos de agua cerrados
                 { gameType: 'impostor', category: 'Lugar', word: 'Faro', impostorHint: 'Torre' },           // Estructuras altas
                 { gameType: 'impostor', category: 'Lugar', word: 'Acera', impostorHint: 'Carretera' },      // Caminos pavimentados
+                { gameType: 'impostor', category: 'Lugar', word: 'Universidad', impostorHint: 'Colegio' },           // Lugar de estudio avanzado
+                { gameType: 'impostor', category: 'Lugar', word: 'Guardería', impostorHint: 'Parque de bolas' },     // Lugar para niños pequeños
+                { gameType: 'impostor', category: 'Lugar', word: 'Asilo', impostorHint: 'Guardería' },               // Cuidado de personas (edad opuesta)
+                { gameType: 'impostor', category: 'Lugar', word: 'Fábrica', impostorHint: 'Humo' },                  // Producción industrial
+                { gameType: 'impostor', category: 'Lugar', word: 'Granja', impostorHint: 'Establo' },                // Lugar de animales
+                { gameType: 'impostor', category: 'Lugar', word: 'Invernadero', impostorHint: 'Selva' },             // Plantas bajo cristal
+                { gameType: 'impostor', category: 'Lugar', word: 'Huerto', impostorHint: 'Jardín' },                 // Plantas para comer vs ver
+                { gameType: 'impostor', category: 'Lugar', word: 'Viñedo', impostorHint: 'Bodega' },                 // Origen del vino
+                { gameType: 'impostor', category: 'Lugar', word: 'Mina', impostorHint: 'Cueva' },                    // Extracción bajo tierra
+                { gameType: 'impostor', category: 'Lugar', word: 'Pozo', impostorHint: 'Agujero' },                  // Acceso a agua profunda
+                { gameType: 'impostor', category: 'Lugar', word: 'Torre', impostorHint: 'Mirador' },                 // Estructura alta para ver
+                { gameType: 'impostor', category: 'Lugar', word: 'Rascacielos', impostorHint: 'Ascensor' },          // Edificio muy alto
+                { gameType: 'impostor', category: 'Lugar', word: 'Ático', impostorHint: 'Tejado' },                  // Parte superior de la casa
+                { gameType: 'impostor', category: 'Lugar', word: 'Sótano', impostorHint: 'Búnker' },                 // Parte inferior y oscura
+                { gameType: 'impostor', category: 'Lugar', word: 'Pasillo', impostorHint: 'Túnel' },                 // Conector de habitaciones
+                { gameType: 'impostor', category: 'Lugar', word: 'Cocina', impostorHint: 'Laboratorio' },            // Donde se crean las mezclas
+                { gameType: 'impostor', category: 'Lugar', word: 'Baño', impostorHint: 'Vestuario' },                // Higiene personal
+                { gameType: 'impostor', category: 'Lugar', word: 'Dormitorio', impostorHint: 'Hotel' },              // Lugar para dormir
+                { gameType: 'impostor', category: 'Lugar', word: 'Salón', impostorHint: 'Cine' },                    // Lugar de la TV y sofá
+                { gameType: 'impostor', category: 'Lugar', word: 'Trastero', impostorHint: 'Museo' },                // Donde se guardan cosas viejas
+                { gameType: 'impostor', category: 'Lugar', word: 'Garaje', impostorHint: 'Taller' },                 // Casa del coche
+                { gameType: 'impostor', category: 'Lugar', word: 'Tejado', impostorHint: 'Gato' },                   // Lugar típico de gatos
+                { gameType: 'impostor', category: 'Lugar', word: 'Chimenea', impostorHint: 'Hoguera' },              // Fuego dentro de casa
+                { gameType: 'impostor', category: 'Lugar', word: 'Piscina', impostorHint: 'Bañera' },                // Contenedor de agua para meterse
+                { gameType: 'impostor', category: 'Lugar', word: 'Jacuzzi', impostorHint: 'Olla' },                  // Agua caliente y burbujas
+                { gameType: 'impostor', category: 'Lugar', word: 'Sauna', impostorHint: 'Horno' },                   // Calor seco extremo
+                { gameType: 'impostor', category: 'Lugar', word: 'Spa', impostorHint: 'Masaje' },                    // Relax
+                { gameType: 'impostor', category: 'Lugar', word: 'Estadio', impostorHint: 'Coliseo' },               // Arena deportiva grande
+                { gameType: 'impostor', category: 'Lugar', word: 'Cancha', impostorHint: 'Patio' },                  // Lugar de juego delimitado
+                { gameType: 'impostor', category: 'Lugar', word: 'Pista de hielo', impostorHint: 'Congelador' },     // Suelo helado
+                { gameType: 'impostor', category: 'Lugar', word: 'Bolera', impostorHint: 'Pasillo' },                // Pista larga y pulida
+                { gameType: 'impostor', category: 'Lugar', word: 'Campo de golf', impostorHint: 'Pradera' },         // Césped muy cuidado
+                { gameType: 'impostor', category: 'Lugar', word: 'Acuario', impostorHint: 'Pecera' },                // Zoo de peces
+                { gameType: 'impostor', category: 'Lugar', word: 'Planetario', impostorHint: 'Espacio' },            // Simulador del cielo
+                { gameType: 'impostor', category: 'Lugar', word: 'Observatorio', impostorHint: 'Telescopio' },       // Mirar estrellas
+                { gameType: 'impostor', category: 'Lugar', word: 'Gasolinera', impostorHint: 'Restaurante' },        // Comida para coches
+                { gameType: 'impostor', category: 'Lugar', word: 'Taller', impostorHint: 'Hospital' },               // Donde arreglan cosas/coches
+                { gameType: 'impostor', category: 'Lugar', word: 'Lavandería', impostorHint: 'Río' },                // Donde se lava la ropa
+                { gameType: 'impostor', category: 'Lugar', word: 'Kiosco', impostorHint: 'Librería' },               // Venta de prensa pequeña
+                { gameType: 'impostor', category: 'Lugar', word: 'Panadería', impostorHint: 'Fábrica' },             // Olor a pan
+                { gameType: 'impostor', category: 'Lugar', word: 'Carnicería', impostorHint: 'Quirófano' },          // Cortes y cuchillos
+                { gameType: 'impostor', category: 'Lugar', word: 'Juguetería', impostorHint: 'Parque' },             // Objetos de diversión
+                { gameType: 'impostor', category: 'Lugar', word: 'Zapatería', impostorHint: 'Pie' },                 // Lugar de calzado
+                { gameType: 'impostor', category: 'Lugar', word: 'Joyería', impostorHint: 'Banco' },                 // Lugar con cosas valiosas
+                { gameType: 'impostor', category: 'Lugar', word: 'Comisaría', impostorHint: 'Cárcel' },             // Policías
+                { gameType: 'impostor', category: 'Lugar', word: 'Juzgado', impostorHint: 'Martillo' },              // Donde se dictan sentencias
+                { gameType: 'impostor', category: 'Lugar', word: 'Embajada', impostorHint: 'Isla' },                 // Territorio extranjero en otro país
+                { gameType: 'impostor', category: 'Lugar', word: 'Frontera', impostorHint: 'Muro' },                 // Línea divisoria
+                { gameType: 'impostor', category: 'Lugar', word: 'Aduana', impostorHint: 'Peaje' },                  // Control de paso
+                { gameType: 'impostor', category: 'Lugar', word: 'Metro', impostorHint: 'Gusano' },                  // Tren bajo tierra
+                { gameType: 'impostor', category: 'Lugar', word: 'Autobús', impostorHint: 'Camión' },                // Vehículo grande de transporte
+                { gameType: 'impostor', category: 'Lugar', word: 'Avión', impostorHint: 'Pájaro' },                  // Vehículo aéreo
+                { gameType: 'impostor', category: 'Lugar', word: 'Crucero', impostorHint: 'Hotel' },                 // Hotel flotante
+                { gameType: 'impostor', category: 'Lugar', word: 'Cohete', impostorHint: 'Fuego' },                  // Transporte vertical
+                { gameType: 'impostor', category: 'Lugar', word: 'Estación espacial', impostorHint: 'Satélite' },    // Casa en órbita
+                { gameType: 'impostor', category: 'Lugar', word: 'Luna', impostorHint: 'Queso' },                    // Mito visual
+                { gameType: 'impostor', category: 'Lugar', word: 'Marte', impostorHint: 'Desierto' },                // Planeta rojo
+                { gameType: 'impostor', category: 'Lugar', word: 'Volcán', impostorHint: 'Montaña' },                // Montaña enfadada
+                { gameType: 'impostor', category: 'Lugar', word: 'Cascada', impostorHint: 'Ducha' },                 // Caída de agua natural
+                { gameType: 'impostor', category: 'Lugar', word: 'Pantano', impostorHint: 'Sopa' },                  // Agua densa y verde
 
                 // --- COMIDA ---
                 { gameType: 'impostor', category: 'Comida', word: 'Pizza', impostorHint: 'Lasaña' },        // Ambos italianos, con salsa y queso
@@ -599,6 +772,64 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Comida', word: 'Sandía', impostorHint: 'Melón' },        // Grandes, dulces y mucha agua
                 { gameType: 'impostor', category: 'Comida', word: 'Cebolla', impostorHint: 'Ajo' },         // Bulbos que dan sabor fuerte
                 { gameType: 'impostor', category: 'Comida', word: 'Palomitas', impostorHint: 'Maíz' },      // Origen y resultado
+                { gameType: 'impostor', category: 'Comida', word: 'Lasaña', impostorHint: 'Edificio' },              // Capas superpuestas
+                { gameType: 'impostor', category: 'Comida', word: 'Canelones', impostorHint: 'Tubos' },              // Pasta enrollada
+                { gameType: 'impostor', category: 'Comida', word: 'Ravioli', impostorHint: 'Almohada' },             // Pasta rellena cuadrada
+                { gameType: 'impostor', category: 'Comida', word: 'Macarrones', impostorHint: 'Tubería' },           // Pasta cilíndrica
+                { gameType: 'impostor', category: 'Comida', word: 'Sopa', impostorHint: 'Pocima' },                  // Líquido caliente con cosas
+                { gameType: 'impostor', category: 'Comida', word: 'Puré', impostorHint: 'Papilla' },                 // Comida triturada
+                { gameType: 'impostor', category: 'Comida', word: 'Gazpacho', impostorHint: 'Zumo' },                // Sopa fría bebible
+                { gameType: 'impostor', category: 'Comida', word: 'Bocadillo', impostorHint: 'Carpeta' },            // Pan guardando cosas dentro
+                { gameType: 'impostor', category: 'Comida', word: 'Tostada', impostorHint: 'Suela' },                // Pan duro y plano
+                { gameType: 'impostor', category: 'Comida', word: 'Cereal', impostorHint: 'Pienso' },                // Comida seca en bol
+                { gameType: 'impostor', category: 'Comida', word: 'Galleta', impostorHint: 'Moneda' },               // Dulce plano y redondo
+                { gameType: 'impostor', category: 'Comida', word: 'Magdalena', impostorHint: 'Hongo' },              // Forma con sombrero
+                { gameType: 'impostor', category: 'Comida', word: 'Bizcocho', impostorHint: 'Esponja' },             // Textura aireada
+                { gameType: 'impostor', category: 'Comida', word: 'Tarta', impostorHint: 'Cumpleaños' },             // Contexto principal
+                { gameType: 'impostor', category: 'Comida', word: 'Flan', impostorHint: 'Temblor' },                 // Se mueve al tocarlo
+                { gameType: 'impostor', category: 'Comida', word: 'Gelatina', impostorHint: 'Medusa' },              // Transparente y temblorosa
+                { gameType: 'impostor', category: 'Comida', word: 'Churros', impostorHint: 'Lazos' },                // Masa frita alargada
+                { gameType: 'impostor', category: 'Comida', word: 'Turrón', impostorHint: 'Ladrillo' },              // Duro y rectangular
+                { gameType: 'impostor', category: 'Comida', word: 'Polvorón', impostorHint: 'Arena' },               // Se deshace en polvo
+                { gameType: 'impostor', category: 'Comida', word: 'Bombón', impostorHint: 'Joya' },                  // Pequeño regalo de chocolate
+                { gameType: 'impostor', category: 'Comida', word: 'Chupa Chups', impostorHint: 'Planeta' },          // Esfera con palo
+                { gameType: 'impostor', category: 'Comida', word: 'Algodón de azúcar', impostorHint: 'Nube' },       // Parecido físico
+                { gameType: 'impostor', category: 'Comida', word: 'Regaliz', impostorHint: 'Cable' },                // Negro y alargado
+                { gameType: 'impostor', category: 'Comida', word: 'Gominola', impostorHint: 'Goma' },                // Textura elástica
+                { gameType: 'impostor', category: 'Comida', word: 'Pistacho', impostorHint: 'Almeja' },              // Se abre igual
+                { gameType: 'impostor', category: 'Comida', word: 'Cacahuete', impostorHint: 'Ocho' },               // Forma de la cáscara
+                { gameType: 'impostor', category: 'Comida', word: 'Nuez', impostorHint: 'Cerebro' },                 // Parecido físico famoso
+                { gameType: 'impostor', category: 'Comida', word: 'Almendra', impostorHint: 'Ojo' },                 // Forma almendrada
+                { gameType: 'impostor', category: 'Comida', word: 'Castaña', impostorHint: 'Erizo' },                // Viene dentro de pinchos
+                { gameType: 'impostor', category: 'Comida', word: 'Aceituna', impostorHint: 'Ojo' },                 // Redonda y a veces rellena
+                { gameType: 'impostor', category: 'Comida', word: 'Pepinillo', impostorHint: 'Dedo' },               // Verde y arrugado
+                { gameType: 'impostor', category: 'Comida', word: 'Champiñón', impostorHint: 'Paraguas' },           // Forma
+                { gameType: 'impostor', category: 'Comida', word: 'Zanahoria', impostorHint: 'Naranja' },            // Color
+                { gameType: 'impostor', category: 'Comida', word: 'Brócoli', impostorHint: 'Árbol' },                // Parece un árbol pequeño
+                { gameType: 'impostor', category: 'Comida', word: 'Coliflor', impostorHint: 'Cerebro' },             // Masa blanca rugosa
+                { gameType: 'impostor', category: 'Comida', word: 'Guisante', impostorHint: 'Perla' },               // Bolita verde
+                { gameType: 'impostor', category: 'Comida', word: 'Maíz', impostorHint: 'Diente' },                  // Granos amarillos
+                { gameType: 'impostor', category: 'Comida', word: 'Calabaza', impostorHint: 'Carruaje' },            // Cenicienta
+                { gameType: 'impostor', category: 'Comida', word: 'Berenjena', impostorHint: 'Morado' },             // Color distintivo
+                { gameType: 'impostor', category: 'Comida', word: 'Aguacate', impostorHint: 'Mantequilla' },         // Textura grasa
+                { gameType: 'impostor', category: 'Comida', word: 'Piña', impostorHint: 'Granada' },                 // Fruta con armadura
+                { gameType: 'impostor', category: 'Comida', word: 'Fresa', impostorHint: 'Corazón' },                // Forma roja
+                { gameType: 'impostor', category: 'Comida', word: 'Cereza', impostorHint: 'Pendientes' },            // Se cuelgan de las orejas
+                { gameType: 'impostor', category: 'Comida', word: 'Uva', impostorHint: 'Globo' },                    // Pequeñas esferas de agua
+                { gameType: 'impostor', category: 'Comida', word: 'Limón', impostorHint: 'Amarillo' },               // Ácido
+                { gameType: 'impostor', category: 'Comida', word: 'Kiwi', impostorHint: 'Pelota de tenis' },         // Peludo y marrón por fuera
+                { gameType: 'impostor', category: 'Comida', word: 'Granada', impostorHint: 'Rubí' },                 // Semillas rojas brillantes
+                { gameType: 'impostor', category: 'Comida', word: 'Higo', impostorHint: 'Saco' },                    // Fruta blanda colgante
+                { gameType: 'impostor', category: 'Comida', word: 'Dátil', impostorHint: 'Cucaracha' },              // Aspecto marrón arrugado (broma visual)
+                { gameType: 'impostor', category: 'Comida', word: 'Jamón', impostorHint: 'Violín' },                 // Por la forma de la pata
+                { gameType: 'impostor', category: 'Comida', word: 'Bacon', impostorHint: 'Cinta' },                  // Tira grasa
+                { gameType: 'impostor', category: 'Comida', word: 'Albóndiga', impostorHint: 'Planeta' },            // Bola de carne
+                { gameType: 'impostor', category: 'Comida', word: 'Filete', impostorHint: 'Zapato' },                // Si está muy hecho
+                { gameType: 'impostor', category: 'Comida', word: 'Costillas', impostorHint: 'Piano' },              // Huesos ordenados
+                { gameType: 'impostor', category: 'Comida', word: 'Sardina', impostorHint: 'Lata' },                 // Enlatadas apretadas
+                { gameType: 'impostor', category: 'Comida', word: 'Calamares', impostorHint: 'Anillos' },            // A la romana
+                { gameType: 'impostor', category: 'Comida', word: 'Mejillón', impostorHint: 'Roca' },                // Negro y duro por fuera
+                { gameType: 'impostor', category: 'Comida', word: 'Ostra', impostorHint: 'Perla' },                  // Tesoro interior
 
                 // --- OBJETOS ---
                 { gameType: 'impostor', category: 'Objetos', word: 'Silla', impostorHint: 'Taburete' },     // Ambos para sentarse
@@ -641,6 +872,65 @@ const seedGameWords = async () => {
                 { gameType: 'impostor', category: 'Objetos', word: 'Aguja', impostorHint: 'Clavo' },        // Puntas metálicas finas
                 { gameType: 'impostor', category: 'Objetos', word: 'Sartén', impostorHint: 'Olla' },        // Utensilios de cocina metálicos
                 { gameType: 'impostor', category: 'Objetos', word: 'Micrófono', impostorHint: 'Altavoz' },  // Entrada/Salida de audio
+                { gameType: 'impostor', category: 'Objetos', word: 'Ordenador', impostorHint: 'Cerebro' },           // Procesa información
+                { gameType: 'impostor', category: 'Objetos', word: 'Teclado', impostorHint: 'Piano' },               // Tiene teclas
+                { gameType: 'impostor', category: 'Objetos', word: 'Ratón', impostorHint: 'Mascota' },               // Nombre animal
+                { gameType: 'impostor', category: 'Objetos', word: 'Pantalla', impostorHint: 'Ventana' },            // Ves cosas a través de ella
+                { gameType: 'impostor', category: 'Objetos', word: 'Impresora', impostorHint: 'Fotocopiadora' },     // Saca papel con tinta
+                { gameType: 'impostor', category: 'Objetos', word: 'Auriculares', impostorHint: 'Orejeras' },        // Cubren las orejas
+                { gameType: 'impostor', category: 'Objetos', word: 'Cámara', impostorHint: 'Ojo' },                  // Captura imágenes
+                { gameType: 'impostor', category: 'Objetos', word: 'Trípode', impostorHint: 'Flamenco' },            // Tres patas largas
+                { gameType: 'impostor', category: 'Objetos', word: 'Enchufe', impostorHint: 'Nariz' },               // Dos agujeros (tipo europeo)
+                { gameType: 'impostor', category: 'Objetos', word: 'Batería', impostorHint: 'Pila' },                // Energía portátil
+                { gameType: 'impostor', category: 'Objetos', word: 'Ventilador', impostorHint: 'Helicóptero' },      // Aspas girando
+                { gameType: 'impostor', category: 'Objetos', word: 'Aire Acondicionado', impostorHint: 'Nevera' },   // Echa frío
+                { gameType: 'impostor', category: 'Objetos', word: 'Radiador', impostorHint: 'Tostadora' },          // Echa calor
+                { gameType: 'impostor', category: 'Objetos', word: 'Lavadora', impostorHint: 'Centrifugadora' },     // Da vueltas con agua
+                { gameType: 'impostor', category: 'Objetos', word: 'Secador', impostorHint: 'Pistola' },             // Forma de pistola de aire
+                { gameType: 'impostor', category: 'Objetos', word: 'Plancha', impostorHint: 'Barco' },               // Forma y vapor
+                { gameType: 'impostor', category: 'Objetos', word: 'Aspiradora', impostorHint: 'Elefante' },         // Trompa que absorbe
+                { gameType: 'impostor', category: 'Objetos', word: 'Taladro', impostorHint: 'Pistola' },             // Forma y gatillo
+                { gameType: 'impostor', category: 'Objetos', word: 'Sierra', impostorHint: 'Tiburón' },              // Dientes afilados
+                { gameType: 'impostor', category: 'Objetos', word: 'Destornillador', impostorHint: 'Llave' },        // Herramienta de giro
+                { gameType: 'impostor', category: 'Objetos', word: 'Metro', impostorHint: 'Cinta' },                 // Medir longitud
+                { gameType: 'impostor', category: 'Objetos', word: 'Escalera', impostorHint: 'Jirafa' },             // Objeto alto
+                { gameType: 'impostor', category: 'Objetos', word: 'Cubo', impostorHint: 'Dado' },                   // Forma geométrica
+                { gameType: 'impostor', category: 'Objetos', word: 'Manguera', impostorHint: 'Serpiente' },          // Tubo largo y flexible
+                { gameType: 'impostor', category: 'Objetos', word: 'Regadera', impostorHint: 'Ducha' },              // Lluvia artificial
+                { gameType: 'impostor', category: 'Objetos', word: 'Rastrillo', impostorHint: 'Tenedor' },           // Puntas para arrastrar
+                { gameType: 'impostor', category: 'Objetos', word: 'Pala', impostorHint: 'Cuchara' },                // Cuchara gigante para tierra
+                { gameType: 'impostor', category: 'Objetos', word: 'Carretilla', impostorHint: 'Coche' },            // Vehículo de una rueda
+                { gameType: 'impostor', category: 'Objetos', word: 'Bicicleta', impostorHint: 'Moto' },              // Dos ruedas
+                { gameType: 'impostor', category: 'Objetos', word: 'Patines', impostorHint: 'Coches' },              // Ruedas en los pies
+                { gameType: 'impostor', category: 'Objetos', word: 'Monopatín', impostorHint: 'Tabla' },             // Tabla con ruedas
+                { gameType: 'impostor', category: 'Objetos', word: 'Casco', impostorHint: 'Sombrero' },              // Protección de cabeza dura
+                { gameType: 'impostor', category: 'Objetos', word: 'Pelota', impostorHint: 'Planeta' },              // Esfera
+                { gameType: 'impostor', category: 'Objetos', word: 'Raqueta', impostorHint: 'Sartén' },              // Mango y superficie redonda
+                { gameType: 'impostor', category: 'Objetos', word: 'Canasta', impostorHint: 'Papelera' },            // Red para encestar
+                { gameType: 'impostor', category: 'Objetos', word: 'Portería', impostorHint: 'Jaula' },              // Estructura de red
+                { gameType: 'impostor', category: 'Objetos', word: 'Silbato', impostorHint: 'Pájaro' },              // Sonido agudo
+                { gameType: 'impostor', category: 'Objetos', word: 'Trofeo', impostorHint: 'Copa' },                 // Premio dorado
+                { gameType: 'impostor', category: 'Objetos', word: 'Medalla', impostorHint: 'Moneda' },              // Metal redondo al cuello
+                { gameType: 'impostor', category: 'Objetos', word: 'Bandera', impostorHint: 'Capa' },                // Tela que ondea
+                { gameType: 'impostor', category: 'Objetos', word: 'Mapa', impostorHint: 'Plano' },                  // Dibujo del terreno
+                { gameType: 'impostor', category: 'Objetos', word: 'Brújula', impostorHint: 'Reloj' },               // Aguja en esfera
+                { gameType: 'impostor', category: 'Objetos', word: 'Prismáticos', impostorHint: 'Ojos' },            // Extensión de visión
+                { gameType: 'impostor', category: 'Objetos', word: 'Telescopio', impostorHint: 'Cañón' },            // Tubo largo apuntando al cielo
+                { gameType: 'impostor', category: 'Objetos', word: 'Microscopio', impostorHint: 'Lupa' },            // Ver lo pequeño
+                { gameType: 'impostor', category: 'Objetos', word: 'Báscula', impostorHint: 'Juez' },                // Dicta el peso
+                { gameType: 'impostor', category: 'Objetos', word: 'Termómetro', impostorHint: 'Mercurio' },         // Mide fiebre
+                { gameType: 'impostor', category: 'Objetos', word: 'Jeringuilla', impostorHint: 'Mosquito' },        // Pica y extrae/mete líquido
+                { gameType: 'impostor', category: 'Objetos', word: 'Tirita', impostorHint: 'Celuloso' },             // Parche para heridas
+                { gameType: 'impostor', category: 'Objetos', word: 'Muleta', impostorHint: 'Pata' },                 // Apoyo extra
+                { gameType: 'impostor', category: 'Objetos', word: 'Silla de ruedas', impostorHint: 'Trono' },       // Asiento móvil
+                { gameType: 'impostor', category: 'Objetos', word: 'Gafas de sol', impostorHint: 'Antifaz' },        // Ocultan ojos oscuros
+                { gameType: 'impostor', category: 'Objetos', word: 'Sombrero', impostorHint: 'Techo' },              // Techo personal
+                { gameType: 'impostor', category: 'Objetos', word: 'Bufanda', impostorHint: 'Serpiente' },           // Tela al cuello
+                { gameType: 'impostor', category: 'Objetos', word: 'Corbata', impostorHint: 'Soga' },                // Nudo al cuello (oficina)
+                { gameType: 'impostor', category: 'Objetos', word: 'Botón', impostorHint: 'Ombligo' },               // Redondo en la ropa
+                { gameType: 'impostor', category: 'Objetos', word: 'Cremallera', impostorHint: 'Dientes' },          // Se cierran mordiendo
+                { gameType: 'impostor', category: 'Objetos', word: 'Bolsillo', impostorHint: 'Canguro' },            // Saco incorporado
+                { gameType: 'impostor', category: 'Objetos', word: 'Cartera', impostorHint: 'Libro' },               // Se abre y guarda papeles/dinero
             ];
         await GameWord.insertMany(initialWords);
         console.log('✅ Base de datos de juegos inicializada.');

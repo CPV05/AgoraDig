@@ -3,6 +3,9 @@
  * @description Lógica del juego "El Impostor". Gestiona estados, tiempos y DOM.
  */
 
+// 1. ESTADO INICIAL
+const AVAILABLE_CATEGORIES = ['Acciones', 'Animales', 'Comida', 'Lugar', 'Objetos'];
+
 let gameState = {
     players: [], 
     config: {
@@ -17,7 +20,6 @@ let gameState = {
 };
 
 async function initImpostorGame() {
-    const appRoot = document.getElementById('app-root');
     renderConfigurationPhase();
 }
 
@@ -28,16 +30,26 @@ function renderConfigurationPhase() {
     // Recuperar configuración previa o valores por defecto
     const savedPlayerCount = gameState.players.length > 0 ? gameState.players.length : 4;
     
-    // Función auxiliar para calcular el máximo permitido
+    // Validar impostores guardados
     const calculateMaxImpostors = (players) => Math.max(1, Math.ceil(players / 2) - 1);
-    
     const initialMaxImpostors = calculateMaxImpostors(savedPlayerCount);
     
-    // Validar impostores guardados contra el límite inicial
     let savedImpostorCount = gameState.config.impostorCount > 0 ? gameState.config.impostorCount : 1;
     if (savedImpostorCount > initialMaxImpostors) {
         savedImpostorCount = initialMaxImpostors;
     }
+
+    // LÓGICA DE PERSISTENCIA DE CATEGORÍAS
+    // Si gameState tiene categorías (partida previa), úsalas. Si no (primera carga), usa todas.
+    const selectedCategories = gameState.config.categories.length > 0 
+        ? gameState.config.categories 
+        : AVAILABLE_CATEGORIES;
+
+    // Generación dinámica de checkboxes basada en el estado
+    const categoriesHTML = AVAILABLE_CATEGORIES.map(cat => {
+        const isChecked = selectedCategories.includes(cat) ? 'checked' : '';
+        return `<label><input type="checkbox" name="category" value="${cat}" ${isChecked}> ${cat}</label>`;
+    }).join('');
 
     container.innerHTML = `
         <div class="game-phase animate-fade-in">
@@ -59,12 +71,7 @@ function renderConfigurationPhase() {
                 <div class="form-group">
                     <label>Categorías</label>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="category" value="Acciones" checked> Acciones</label>
-                        <label><input type="checkbox" name="category" value="Animales" checked> Animales</label>
-                        <label><input type="checkbox" name="category" value="Comida" checked> Comida</label>
-                        <label><input type="checkbox" name="category" value="Lugar" checked> Lugar</label>
-                        <label><input type="checkbox" name="category" value="Objetos" checked> Objetos</label>
-                    </div>
+                        ${categoriesHTML} </div>
                 </div>
                 <p id="game-error" class="error-text hidden"></p>
                 <button type="submit" class="button-primary center">Siguiente</button>
@@ -75,10 +82,8 @@ function renderConfigurationPhase() {
     // Referencias DOM
     const numPlayersInput = document.getElementById('num-players');
     const playersValDisplay = document.getElementById('players-val');
-    
     const numImpostorsInput = document.getElementById('num-impostors');
     const impostorsValDisplay = document.getElementById('impostors-val');
-    
     const namesContainer = document.getElementById('player-names-container');
 
     // Generador de Inputs para Nombres
@@ -91,32 +96,27 @@ function renderConfigurationPhase() {
             const input = document.createElement('input');
             input.type = 'text';
             input.placeholder = `Jugador ${i + 1}`;
-            // Validacion de seguridad: maxlength para evitar buffer overflows visuales o spam
+            
+            // REGLA 1: Atributo HTML para UX
             input.maxLength = 15; 
+            
             input.required = true;
-            // Preservar nombre si existe, o usar el del estado
             input.value = currentNamesFromDom[i] || gameState.players[i]?.name || ''; 
             input.className = 'player-name-input';
             namesContainer.appendChild(input);
         }
     };
 
-    // Lógica Central de Sincronización
+    // Lógica de Sincronización (Clamping)
     const syncImpostorLimits = (playerCount) => {
         const maxAllowed = calculateMaxImpostors(playerCount);
         const currentImpostorVal = parseInt(numImpostorsInput.value, 10);
-
-        // 1. Actualizar el atributo HTML max
         numImpostorsInput.max = maxAllowed;
 
-        // 2. Lógica de corrección (Clamping)
         if (currentImpostorVal > maxAllowed) {
-            // Si tenemos más impostores de los permitidos, bajamos al máximo
             numImpostorsInput.value = maxAllowed;
             impostorsValDisplay.textContent = maxAllowed;
         } else {
-            // Si es válido, aseguramos que el texto coincida con el valor actual
-            // (Esto corrige casos donde el DOM visual no se haya repintado)
             impostorsValDisplay.textContent = currentImpostorVal;
         }
     };
@@ -125,8 +125,6 @@ function renderConfigurationPhase() {
     numPlayersInput.addEventListener('input', (e) => {
         const val = parseInt(e.target.value, 10);
         playersValDisplay.textContent = val;
-        
-        // Primero ajustamos límites, luego generamos nombres
         syncImpostorLimits(val); 
         generateNameInputs(val);
     });
@@ -135,9 +133,8 @@ function renderConfigurationPhase() {
         impostorsValDisplay.textContent = e.target.value;
     });
 
-    // Inicialización al renderizar
+    // Inicialización
     generateNameInputs(savedPlayerCount);
-    // Ejecutamos la sincronización una vez al inicio para asegurar consistencia
     syncImpostorLimits(savedPlayerCount);
 
     // Manejo del Submit
@@ -146,21 +143,26 @@ function renderConfigurationPhase() {
         const errorEl = document.getElementById('game-error');
         errorEl.classList.add('hidden');
 
-        // Sanitización básica de entradas
         const inputs = document.querySelectorAll('.player-name-input');
-        const names = Array.from(inputs).map(input => input.value.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;")); // Simple XSS prevent
+        
+        // REGLA 1 & SEGURIDAD: Sanitización y recorte forzoso
+        const names = Array.from(inputs).map(input => 
+            input.value
+                .trim()
+                .substring(0, 15) // Aplicación estricta del límite de caracteres
+                .replace(/</g, "&lt;").replace(/>/g, "&gt;") // Prevención XSS
+        );
         
         const impostorCount = parseInt(numImpostorsInput.value, 10);
+        
+        // Capturamos categorías seleccionadas
         const categories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
 
-        // Validación final de seguridad (Server-side logic en cliente)
+        // Validación
         const maxAllowedImpostors = calculateMaxImpostors(names.length);
-
         if (impostorCount > maxAllowedImpostors) {
-            errorEl.textContent = `Error de configuración: Máximo ${maxAllowedImpostors} impostores para ${names.length} jugadores.`;
+            errorEl.textContent = `Error: Máximo ${maxAllowedImpostors} impostores.`;
             errorEl.classList.remove('hidden');
-            // Autocorrección final
-            syncImpostorLimits(names.length);
             return;
         }
 
@@ -171,6 +173,10 @@ function renderConfigurationPhase() {
         }
 
         try {
+            // Guardamos la configuración en el estado ANTES de la llamada a la API
+            gameState.config.impostorCount = impostorCount;
+            gameState.config.categories = categories; // <-- AQUÍ SE GUARDA LA SELECCIÓN
+
             const response = await fetch('/api/games/impostor/init', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -180,13 +186,14 @@ function renderConfigurationPhase() {
             if (!response.ok) throw new Error('Error al conectar con el servidor.');
             const data = await response.json();
 
-            gameState.config.impostorCount = impostorCount;
+            // Actualización de estado de juego
             gameState.secretWord = data.word;
             gameState.impostorHint = data.impostorHint;
             gameState.currentCategory = data.category;
             
             gameState.players = names.map(name => ({ name, role: 'player', isEliminated: false }));
             
+            // Asignación de roles
             let impostorsAssigned = 0;
             while (impostorsAssigned < impostorCount) {
                 const idx = Math.floor(Math.random() * gameState.players.length);

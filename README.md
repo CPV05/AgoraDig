@@ -16,7 +16,7 @@
 * **Publicación de comentarios:** Posibilidad de responder en los hilos para fomentar el debate.
 * **Búsqueda avanzada:** Un motor de búsqueda para encontrar fácilmente temas o comentarios específicos.
 * **Moderación:** Herramientas para que los administradores puedan gestionar el contenido y mantener un ambiente respetuoso.
-
+* **Zona de Juegos:** Zona de entretenimiento interactivo directamente en la plataforma.
 
 ## Instalación y Puesta en Marcha
 

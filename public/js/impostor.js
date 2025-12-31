@@ -25,10 +25,15 @@ async function initImpostorGame() {
 function renderConfigurationPhase() {
     const container = document.getElementById('game-container');
     
+    // Recuperar configuración previa o valores por defecto
     const savedPlayerCount = gameState.players.length > 0 ? gameState.players.length : 4;
     
-    const initialMaxImpostors = Math.max(1, Math.ceil(savedPlayerCount / 2) - 1);
+    // Función auxiliar para calcular el máximo permitido
+    const calculateMaxImpostors = (players) => Math.max(1, Math.ceil(players / 2) - 1);
     
+    const initialMaxImpostors = calculateMaxImpostors(savedPlayerCount);
+    
+    // Validar impostores guardados contra el límite inicial
     let savedImpostorCount = gameState.config.impostorCount > 0 ? gameState.config.impostorCount : 1;
     if (savedImpostorCount > initialMaxImpostors) {
         savedImpostorCount = initialMaxImpostors;
@@ -67,6 +72,7 @@ function renderConfigurationPhase() {
         </div>
     `;
 
+    // Referencias DOM
     const numPlayersInput = document.getElementById('num-players');
     const playersValDisplay = document.getElementById('players-val');
     
@@ -75,6 +81,7 @@ function renderConfigurationPhase() {
     
     const namesContainer = document.getElementById('player-names-container');
 
+    // Generador de Inputs para Nombres
     const generateNameInputs = (num) => {
         const currentInputs = document.querySelectorAll('.player-name-input');
         const currentNamesFromDom = Array.from(currentInputs).map(i => i.value);
@@ -84,27 +91,43 @@ function renderConfigurationPhase() {
             const input = document.createElement('input');
             input.type = 'text';
             input.placeholder = `Jugador ${i + 1}`;
+            // Validacion de seguridad: maxlength para evitar buffer overflows visuales o spam
+            input.maxLength = 15; 
             input.required = true;
+            // Preservar nombre si existe, o usar el del estado
             input.value = currentNamesFromDom[i] || gameState.players[i]?.name || ''; 
             input.className = 'player-name-input';
             namesContainer.appendChild(input);
         }
     };
 
-    const updateImpostorLimits = (playerCount) => {
-        const maxImpostors = Math.max(1, Math.ceil(playerCount / 2) - 1);
-        numImpostorsInput.max = maxImpostors;
-        
-        if (parseInt(numImpostorsInput.value) > maxImpostors) {
-            numImpostorsInput.value = maxImpostors;
-            impostorsValDisplay.textContent = maxImpostors;
+    // Lógica Central de Sincronización
+    const syncImpostorLimits = (playerCount) => {
+        const maxAllowed = calculateMaxImpostors(playerCount);
+        const currentImpostorVal = parseInt(numImpostorsInput.value, 10);
+
+        // 1. Actualizar el atributo HTML max
+        numImpostorsInput.max = maxAllowed;
+
+        // 2. Lógica de corrección (Clamping)
+        if (currentImpostorVal > maxAllowed) {
+            // Si tenemos más impostores de los permitidos, bajamos al máximo
+            numImpostorsInput.value = maxAllowed;
+            impostorsValDisplay.textContent = maxAllowed;
+        } else {
+            // Si es válido, aseguramos que el texto coincida con el valor actual
+            // (Esto corrige casos donde el DOM visual no se haya repintado)
+            impostorsValDisplay.textContent = currentImpostorVal;
         }
     };
 
+    // Listeners
     numPlayersInput.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value);
+        const val = parseInt(e.target.value, 10);
         playersValDisplay.textContent = val;
-        updateImpostorLimits(val);
+        
+        // Primero ajustamos límites, luego generamos nombres
+        syncImpostorLimits(val); 
         generateNameInputs(val);
     });
 
@@ -112,24 +135,32 @@ function renderConfigurationPhase() {
         impostorsValDisplay.textContent = e.target.value;
     });
 
+    // Inicialización al renderizar
     generateNameInputs(savedPlayerCount);
-    updateImpostorLimits(savedPlayerCount);
+    // Ejecutamos la sincronización una vez al inicio para asegurar consistencia
+    syncImpostorLimits(savedPlayerCount);
 
+    // Manejo del Submit
     document.getElementById('game-config-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const errorEl = document.getElementById('game-error');
         errorEl.classList.add('hidden');
 
+        // Sanitización básica de entradas
         const inputs = document.querySelectorAll('.player-name-input');
-        const names = Array.from(inputs).map(input => input.value.trim());
-        const impostorCount = parseInt(numImpostorsInput.value);
+        const names = Array.from(inputs).map(input => input.value.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;")); // Simple XSS prevent
+        
+        const impostorCount = parseInt(numImpostorsInput.value, 10);
         const categories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
 
-        const maxAllowedImpostors = Math.max(1, Math.ceil(names.length / 2) - 1);
+        // Validación final de seguridad (Server-side logic en cliente)
+        const maxAllowedImpostors = calculateMaxImpostors(names.length);
 
         if (impostorCount > maxAllowedImpostors) {
-            errorEl.textContent = `Para ${names.length} jugadores, máximo ${maxAllowedImpostors} impostor(es).`;
+            errorEl.textContent = `Error de configuración: Máximo ${maxAllowedImpostors} impostores para ${names.length} jugadores.`;
             errorEl.classList.remove('hidden');
+            // Autocorrección final
+            syncImpostorLimits(names.length);
             return;
         }
 

@@ -93,14 +93,16 @@ function renderConfigurationPhase() {
                     </div>
                 </div>
 
-                <div id="custom-config-area" class="custom-area ${customHiddenClass}" style="margin-top:1rem; border-top:1px solid #ccc; padding-top:1rem;">
+                <div id="custom-config-area" class="custom-area ${customHiddenClass} center-text" style="margin-top:1rem; border-top:1px solid #ccc; padding-top:1rem;">
                     <h3>Palabras Personalizadas (${MIN_CUSTOM_WORDS}-${MAX_CUSTOM_WORDS})</h3>
                     <p class="small-text">Guarda tus palabras en este navegador. Máx ${MAX_WORD_LENGTH} caracteres.</p>
                     <div id="custom-words-list"></div>
                     <button type="button" id="btn-add-word" class="button-secondary small" style="margin-top:0.5rem;">+ Añadir Palabra</button>
+                    <br>
+                    <br>
                 </div>
 
-                <p id="game-error" class="error-text hidden"></p>
+                <p id="game-error" class="error-text hidden center-text"></p>
                 <button type="submit" class="button-primary center">Siguiente</button>
             </form>
         </div>
@@ -240,7 +242,7 @@ function renderConfigurationPhase() {
         const standardCategories = categories.filter(c => c !== CUSTOM_CAT_KEY);
 
         if (useCustom && standardCategories.length < 1) {
-            errorEl.textContent = 'Debes seleccionar al menos una categoría "Normal" para poder añadir la Personalizada.';
+            errorEl.textContent = 'Debes seleccionar al menos una categoría "Predefinida" para poder añadir la Personalizada.';
             errorEl.classList.remove('hidden');
             return;
         }

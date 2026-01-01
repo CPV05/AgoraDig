@@ -1,7 +1,6 @@
 /**
  * @file impostor.js
  * @description Lógica del juego "El Impostor".
- * Version: 3.3 - Corrección de bug visual en contadores y lógica offline.
  */
 
 // Constantes de configuración
@@ -27,11 +26,12 @@ let gameState = {
 };
 
 async function initImpostorGame() {
-    const storedCustom = localStorage.getItem('impostor_custom_words');
+    //SessionStorage para que los datos se mantengan solo durante la sesión actual(navegador abierto)
+    const storedCustom = sessionStorage.getItem('impostor_custom_words');
     if (storedCustom) {
         try {
             gameState.config.customWords = JSON.parse(storedCustom);
-        } catch (e) { console.error("Error cargando datos locales", e); }
+        } catch (e) { console.error("Error cargando datos de sesión", e); }
     }
     renderConfigurationPhase();
 }
@@ -40,23 +40,17 @@ async function initImpostorGame() {
 function renderConfigurationPhase() {
     const container = document.getElementById('game-container');
     
-    // Recuperar configuración previa
     const savedPlayerCount = gameState.players.length > 0 ? gameState.players.length : 4;
-    
-    // Función auxiliar para calcular máximos
     const calculateMaxImpostors = (players) => Math.max(1, Math.ceil(players / 2) - 1);
     
-    // Validaciones iniciales
     const initialMaxImpostors = calculateMaxImpostors(savedPlayerCount);
     let savedImpostorCount = gameState.config.impostorCount > 0 ? gameState.config.impostorCount : 1;
-    // Corregir si el guardado excede el permitido actual
     if (savedImpostorCount > initialMaxImpostors) savedImpostorCount = initialMaxImpostors;
 
     const selectedCategories = gameState.config.categories.length > 0 
         ? gameState.config.categories 
         : [...AVAILABLE_CATEGORIES];
 
-    // Generar HTML
     const categoriesHTML = AVAILABLE_CATEGORIES.map(cat => {
         const isChecked = selectedCategories.includes(cat) ? 'checked' : '';
         return `<label><input type="checkbox" name="category" value="${cat}" ${isChecked}> ${cat}</label>`;
@@ -95,11 +89,10 @@ function renderConfigurationPhase() {
 
                 <div id="custom-config-area" class="custom-area ${customHiddenClass} center-text" style="margin-top:1rem; border-top:1px solid #ccc; padding-top:1rem;">
                     <h3>Palabras Personalizadas (${MIN_CUSTOM_WORDS}-${MAX_CUSTOM_WORDS})</h3>
-                    <p class="small-text">Guarda tus palabras en este navegador. Máx ${MAX_WORD_LENGTH} caracteres.</p>
+                    <p class="small-text">Máx ${MAX_WORD_LENGTH} caracteres.</p>
                     <div id="custom-words-list"></div>
                     <button type="button" id="btn-add-word" class="button-secondary small" style="margin-top:0.5rem;">+ Añadir Palabra</button>
-                    <br>
-                    <br>
+                    <br><br>
                 </div>
 
                 <p id="game-error" class="error-text hidden center-text"></p>
@@ -108,20 +101,16 @@ function renderConfigurationPhase() {
         </div>
     `;
 
-    // Referencias DOM
     const numPlayersInput = document.getElementById('num-players');
     const playersValDisplay = document.getElementById('players-val');
-    
     const numImpostorsInput = document.getElementById('num-impostors');
     const impostorsValDisplay = document.getElementById('impostors-val');
-    
     const namesContainer = document.getElementById('player-names-container');
     const chkCustom = document.getElementById('chk-custom');
     const customArea = document.getElementById('custom-config-area');
     const customListContainer = document.getElementById('custom-words-list');
     const btnAddWord = document.getElementById('btn-add-word');
 
-    // --- GENERADORES ---
     const generateNameInputs = (num) => {
         const currentInputs = document.querySelectorAll('.player-name-input');
         const currentNamesFromDom = Array.from(currentInputs).map(i => i.value);
@@ -141,6 +130,7 @@ function renderConfigurationPhase() {
 
     const renderCustomInputs = () => {
         let wordsToRender = gameState.config.customWords;
+        // Rellenar hasta el mínimo si hace falta
         while (wordsToRender.length < MIN_CUSTOM_WORDS) {
             wordsToRender.push({ word: '', hint: '' });
         }
@@ -160,44 +150,41 @@ function renderConfigurationPhase() {
             <span style="align-self:center;">${index + 1}.</span>
             <input type="text" class="custom-input word" placeholder="Palabra" value="${valWord}" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
             <input type="text" class="custom-input hint" placeholder="Pista" value="${valHint}" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
-            <button type="button" class="btn-remove-row" style="background:red; color:white; border:none; border-radius:4px; cursor:pointer;">✕</button>
+            <button type="button" class="btn-remove-row" style="background:var(--error-color, red); color:white; border:none; border-radius:4px; cursor:pointer; width:50px;">X </button>
         `;
         
         row.querySelector('.btn-remove-row').addEventListener('click', () => {
-            row.remove();
+            const currentRows = customListContainer.querySelectorAll('.custom-row');
+            
+            if (currentRows.length > MIN_CUSTOM_WORDS) {
+                // Si hay más del mínimo, eliminamos la fila
+                row.remove();
+            } else {
+                // Si estamos en el mínimo (o menos), solo limpiamos el contenido
+                row.querySelector('.word').value = '';
+                row.querySelector('.hint').value = '';
+            }
+            // Siempre actualizamos la UI (índices)
             updateCustomUI();
         });
+        
         customListContainer.appendChild(row);
     };
 
     const updateCustomUI = () => {
         const rows = customListContainer.querySelectorAll('.custom-row');
+        // Renumerar índices visuales
         rows.forEach((row, idx) => row.querySelector('span').textContent = `${idx + 1}.`);
-        const isMin = rows.length <= MIN_CUSTOM_WORDS;
-        rows.forEach(row => row.querySelector('.btn-remove-row').disabled = isMin);
+        
         btnAddWord.style.display = rows.length >= MAX_CUSTOM_WORDS ? 'none' : 'inline-block';
     };
 
-    // --- LISTENERS ---
-
-    // 1. LISTENER CORREGIDO PARA JUGADORES
     numPlayersInput.addEventListener('input', (e) => {
         const val = parseInt(e.target.value, 10);
         playersValDisplay.textContent = val;
-        
-        // Calcular nuevo límite
         const maxImpostors = calculateMaxImpostors(val);
-        
-        // Actualizar atributo max del slider
         numImpostorsInput.max = maxImpostors;
-        
-        // NOTA DE SEGURIDAD: El navegador ajusta numImpostorsInput.value automáticamente si > max.
-        // Por eso, NO usamos un 'if (val > max)', sino que leemos el valor actual
-        // directamente del input, que ya habrá sido corregido por el navegador.
-        
-        // Forzamos actualización visual con el valor real actual del input
         impostorsValDisplay.textContent = numImpostorsInput.value;
-        
         generateNameInputs(val);
     });
 
@@ -222,11 +209,9 @@ function renderConfigurationPhase() {
         }
     });
 
-    // Inicialización visual
     generateNameInputs(savedPlayerCount);
     if (isCustomChecked) renderCustomInputs();
 
-    // --- SUBMIT ---
     document.getElementById('game-config-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const errorEl = document.getElementById('game-error');
@@ -254,21 +239,20 @@ function renderConfigurationPhase() {
 
         const impostorCount = parseInt(numImpostorsInput.value, 10);
         
-        // Validar lógica personalizada
         let cleanCustomWords = [];
         if (useCustom) {
             const rows = customListContainer.querySelectorAll('.custom-row');
             cleanCustomWords = Array.from(rows).map(row => ({
                 word: row.querySelector('.word').value.trim().substring(0, MAX_WORD_LENGTH).replace(/</g, "&lt;"),
                 hint: row.querySelector('.hint').value.trim().substring(0, MAX_WORD_LENGTH).replace(/</g, "&lt;")
-            }));
+            })).filter(item => item.word && item.hint); // Filtramos vacíos por seguridad
 
             if (cleanCustomWords.length < MIN_CUSTOM_WORDS || cleanCustomWords.length > MAX_CUSTOM_WORDS) {
-                errorEl.textContent = `La categoría personalizada requiere entre ${MIN_CUSTOM_WORDS} y ${MAX_CUSTOM_WORDS} palabras.`;
+                errorEl.textContent = `La categoría personalizada requiere entre ${MIN_CUSTOM_WORDS} y ${MAX_CUSTOM_WORDS} palabras completas.`;
                 errorEl.classList.remove('hidden');
                 return;
             }
-            localStorage.setItem('impostor_custom_words', JSON.stringify(cleanCustomWords));
+            sessionStorage.setItem('impostor_custom_words', JSON.stringify(cleanCustomWords));
         }
 
         gameState.config.impostorCount = impostorCount;
@@ -279,14 +263,12 @@ function renderConfigurationPhase() {
 
         try {
             if (finalCategory === CUSTOM_CAT_KEY) {
-                // MODO OFFLINE
                 const pick = cleanCustomWords[Math.floor(Math.random() * cleanCustomWords.length)];
                 gameState.currentCategory = CUSTOM_CAT_KEY;
                 gameState.secretWord = pick.word;
                 gameState.impostorHint = pick.hint;
                 await new Promise(r => setTimeout(r, 500));
             } else {
-                // MODO ONLINE
                 const response = await fetch('/api/games/impostor/init', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -321,13 +303,12 @@ function renderConfigurationPhase() {
     });
 }
 
-// --- FASE 2: PRESENTACIÓN (Sin cambios visuales) ---
+// --- FASE 2: PRESENTACIÓN ---
 function renderPresentationPhase(playerIndex) {
     const container = document.getElementById('game-container');
     
     if (playerIndex >= gameState.players.length) {
-        gameState.startTime = new Date();
-        renderVotingPhase(1); 
+        renderStartPlayerPhase(); 
         return;
     }
 
@@ -356,7 +337,7 @@ function renderPresentationPhase(playerIndex) {
             </div>
             <br>
             <button id="next-player-btn" class="button-primary hidden">
-                ${playerIndex === gameState.players.length - 1 ? 'Empezar Partida' : 'Siguiente Jugador'}
+                ${playerIndex === gameState.players.length - 1 ? 'Continuar' : 'Siguiente Jugador'}
             </button>
         </div>
     `;
@@ -378,7 +359,33 @@ function renderPresentationPhase(playerIndex) {
     });
 }
 
-// --- FASE 3: VOTACIÓN ---
+// --- FASE 3 SELECCIÓN JUGADOR INICIAL ---
+function renderStartPlayerPhase() {
+    const container = document.getElementById('game-container');
+    
+    // Elegir aleatoriamente a cualquiera de los jugadores para empezar
+    const starterIndex = Math.floor(Math.random() * gameState.players.length);
+    const starterPlayer = gameState.players[starterIndex];
+
+    container.innerHTML = `
+        <div class="game-phase center-text animate-fade-in">
+            <h2>EMPIEZA</h2>
+            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px; display:inline-block; border: 2px solid var(--primary-color);">
+                <h1 style="color: var(--primary-color); margin:0;">${starterPlayer.name}</h1>
+            </div>
+            
+            <p class="small-text" style="margin-top:2rem;">Cuando estéis listos, iniciad la ronda.</p>
+            <button id="start-voting-btn" class="button-primary">Empezar Ronda 1</button>
+        </div>
+    `;
+
+    document.getElementById('start-voting-btn').addEventListener('click', () => {
+        gameState.startTime = new Date(); // El tiempo cuenta desde que empieza el debate
+        renderVotingPhase(1);
+    });
+}
+
+// --- FASE 4: VOTACIÓN ---
 function renderVotingPhase(roundNumber) {
     const container = document.getElementById('game-container');
     const activePlayers = gameState.players.filter(p => !p.isEliminated);
@@ -452,7 +459,7 @@ function handleExpulsion(name, roundNumber) {
     });
 }
 
-// --- FASE 4: RESULTADOS ---
+// --- FASE 5: RESULTADOS ---
 function renderResults(winner) {
     const container = document.getElementById('game-container');
     const endTime = new Date();

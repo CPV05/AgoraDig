@@ -148,10 +148,15 @@ function renderConfigurationPhase() {
         
         row.innerHTML = `
             <span style="align-self:center;">${index + 1}.</span>
-            <input type="text" class="custom-input word" placeholder="Palabra" value="${valWord}" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
-            <input type="text" class="custom-input hint" placeholder="Pista" value="${valHint}" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
+            <input type="text" class="custom-input word" placeholder="Palabra" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
+            <input type="text" class="custom-input hint" placeholder="Pista" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
             <button type="button" class="btn-remove-row" style="background:var(--error-color, red); color:white; border:none; border-radius:4px; cursor:pointer; width:50px;">X </button>
         `;
+
+        const wordInput = row.querySelector('.word');
+        const hintInput = row.querySelector('.hint');
+        wordInput.value = valWord || '';
+        hintInput.value = valHint || '';
         
         row.querySelector('.btn-remove-row').addEventListener('click', () => {
             const currentRows = customListContainer.querySelectorAll('.custom-row');
@@ -160,11 +165,10 @@ function renderConfigurationPhase() {
                 // Si hay más del mínimo, eliminamos la fila
                 row.remove();
             } else {
-                // Si estamos en el mínimo (o menos), solo limpiamos el contenido
-                row.querySelector('.word').value = '';
-                row.querySelector('.hint').value = '';
+                // Si estamos en el mínimo, solo limpiamos el contenido
+                wordInput.value = '';
+                hintInput.value = '';
             }
-            // Siempre actualizamos la UI (índices)
             updateCustomUI();
         });
         
@@ -198,6 +202,7 @@ function renderConfigurationPhase() {
             renderCustomInputs();
         } else {
             customArea.classList.add('hidden');
+            customListContainer.innerHTML = ''; 
         }
     });
 

@@ -1,0 +1,268 @@
+/**
+ * @file wordle.css
+ * @description Estilos completos para el juego Wordle (Tablero + Teclado + Overlay Modal).
+ */
+
+/* ==========================================================================
+   CONFIGURACIÓN Y VARIABLES
+   ========================================================================== */
+#wordle-game-container {
+    /* Necesario para posicionar el overlay absoluto respecto a este contenedor */
+    position: relative;
+
+    /* Variables de colores del juego */
+    --wordle-correct: #6aaa64;    /* Verde */
+    --wordle-present: #c9b458;    /* Amarillo */
+    --wordle-absent: #787c7e;     /* Gris */
+    --wordle-tile-bg: var(--color-fondo-input);
+    --wordle-tile-border: var(--color-borde);
+    
+    /* Variables locales para el overlay */
+    --overlay-bg: rgba(25, 25, 25, 0.92);
+    --overlay-text: #ffffff;
+    --overlay-text-dim: #d0d0d0;
+}
+
+/* ==========================================================================
+   TABLERO DE JUEGO
+   ========================================================================== */
+.wordle-board {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    gap: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 350px;
+    height: 420px;
+    margin: 0 auto;
+}
+
+.wordle-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+/* Estilo de las Fichas (Tiles) */
+.tile {
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--wordle-tile-border);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: var(--wordle-tile-bg);
+    color: var(--color-texto);
+    user-select: none;
+    transition: transform 0.2s, background-color 0.5s, border-color 0.5s;
+}
+
+/* Animación al escribir (POP) */
+.tile[data-status="active"] {
+    border-color: var(--color-texto-secundario);
+    animation: pop 0.1s;
+}
+
+/* Estados de validación (Colores) */
+.tile[data-status="correct"] {
+    background-color: var(--wordle-correct);
+    border-color: var(--wordle-correct);
+    color: white;
+}
+.tile[data-status="present"] {
+    background-color: var(--wordle-present);
+    border-color: var(--wordle-present);
+    color: white;
+}
+.tile[data-status="absent"] {
+    background-color: var(--wordle-absent);
+    border-color: var(--wordle-absent);
+    color: white;
+}
+
+/* Animación de volteo (FLIP) */
+.tile.flip {
+    animation: flip 0.6s ease;
+}
+
+/* ==========================================================================
+   TECLADO VIRTUAL
+   ========================================================================== */
+.keyboard {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.keyboard-row {
+    display: flex;
+    gap: 6px;
+}
+
+.keyboard button {
+    font-family: inherit;
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    height: 58px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: var(--color-borde); /* Gris base */
+    color: var(--color-texto);
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    min-width: 40px; 
+    touch-action: manipulation;
+}
+
+.keyboard button.wide-key {
+    flex: 1.5;
+    font-size: 0.8rem;
+}
+
+/* Colores en el teclado tras adivinar */
+.keyboard button.correct { background-color: var(--wordle-correct); color: white; }
+.keyboard button.present { background-color: var(--wordle-present); color: white; }
+.keyboard button.absent { background-color: var(--wordle-absent); color: white; }
+
+/* ==========================================================================
+   MODAL DE FIN DE JUEGO (OVERLAY REFINADO)
+   ========================================================================== */
+
+/* Fondo general que cubre el juego (ligeramente oscuro, no invasivo) */
+.game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Estado visible */
+.game-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Caja Central (Estilo Cristal Semitransparente Oscuro) */
+.overlay-content {
+    /* Fondo oscuro con alta opacidad para legibilidad */
+    background-color: var(--overlay-bg);
+    /* Efecto de desenfoque del fondo (Glassmorphism) */
+    backdrop-filter: blur(8px); 
+    /* Borde sutil brillante */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* Sombra profunda para elevación */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    
+    color: var(--overlay-text);
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    
+    /* Dimensiones controladas */
+    max-width: 90%;
+    width: 420px;
+    
+    /* Animación de entrada (pequeño rebote) */
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-overlay.show .overlay-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Tipografía del Modal */
+.message-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+.message-body {
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+    color: var(--overlay-text-dim);
+    line-height: 1.5;
+}
+
+/* Variantes de color para el título */
+.message-title.success { color: #4ade80; /* Verde brillante */ }
+.message-title.error { color: #f87171; /* Rojo suave */ }
+
+/* Botones dentro del Modal */
+.overlay-content .btn {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.overlay-content .btn-text {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    margin-top: 1rem;
+    display: inline-block;
+    background: none;
+    border: none;
+    width: auto;
+}
+.overlay-content .btn-text:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    background: none;
+}
+
+/* ==========================================================================
+   ANIMACIONES (KEYFRAMES)
+   ========================================================================== */
+@keyframes pop {
+    50% { transform: scale(1.1); }
+}
+
+@keyframes flip {
+    0% { transform: rotateX(0); }
+    50% { transform: rotateX(90deg); }
+    100% { transform: rotateX(0); }
+}
+
+/* ==========================================================================
+   RESPONSIVE (MÓVIL)
+   ========================================================================== */
+@media (max-width: 500px) {
+    .wordle-board {
+        width: 100%;
+        max-width: 320px;
+        height: 380px;
+        margin-bottom: 1rem;
+    }
+    .tile { font-size: 1.8rem; }
+    
+    .keyboard { width: 100%; padding: 0 5px; box-sizing: border-box; }
+    .keyboard button { height: 50px; min-width: 30px; font-size: 0.9rem; }
+    
+    .overlay-content {
+        padding: 2rem 1.5rem;
+        width: 85%;
+    }
+    .message-title { font-size: 1.8rem; }
+}

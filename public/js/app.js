@@ -710,13 +710,15 @@ async function loadAndExecuteScript(templatePath) {
         '/templates/register.html': '/js/register.js',
         '/templates/login.html': '/js/login.js',
         '/templates/profile.html': '/js/profile.js',
-        '/templates/impostor.html': '/js/impostor.js'
+        '/templates/impostor.html': '/js/impostor.js',
+        '/templates/wordle.html': '/js/wordle.js'
     };
     const initFunctionMap = {
         '/templates/register.html': () => { if (typeof initRegisterForm === 'function') initRegisterForm(); },
         '/templates/login.html': () => { if (typeof initLoginForm === 'function') initLoginForm(); },
         '/templates/profile.html': () => { if (typeof initProfilePage === 'function') initProfilePage(); },
-        '/templates/impostor.html': () => { if (typeof initImpostorGame === 'function') initImpostorGame(); }
+        '/templates/impostor.html': () => { if (typeof initImpostorGame === 'function') initImpostorGame(); },
+        '/templates/wordle.html': () => { if (typeof initWordleGame === 'function') initWordleGame(); }
     };
 
     const scriptSrc = scriptMap[templatePath];
@@ -1372,6 +1374,21 @@ async function renderPage(path) {
         templatePath = '/templates/impostor.html';
         document.title = 'El Impostor - Jugando';
         cssPaths = ['/css/games.css', '/css/forms.css'];
+        await loadViewCss(cssPaths);
+
+    } else if (pathname === '/games/wordle') {
+        // SEGURIDAD: Verificar autenticación
+        const isAuthenticated = await checkAuth();
+        
+        if (!isAuthenticated) {
+            loaderContainer.classList.add('hidden'); 
+            return; 
+        }
+
+        templatePath = '/templates/wordle.html';
+        document.title = 'Wordle - Jugando';
+        // Cargamos los estilos del juego
+        cssPaths = ['/css/wordle.css', '/css/games.css']; 
         await loadViewCss(cssPaths);
 
     } else if (pathname === '/register') {

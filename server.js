@@ -423,19 +423,30 @@ gameWordSchema.index({ gameType: 1, category: 1 });
 
 const GameWord = messagesDbConnection.model('GameWord', gameWordSchema);
 
-// --- SEEDER INICIAL (Opcional: Ejecutar una vez si la BD está vacía) ---
-const initialGameWords = require('./seeds/impostorData.js');
+// --- SEEDER INICIAL ---
+const impostorData = require('./seeds/impostorData.js');
+const wordleData = require('./seeds/wordleData.js');
+
 const seedGameWords = async () => {
     try {
-        const count = await GameWord.countDocuments();
-        if (count === 0) {
-            console.log('🌱 Sembrando base de datos de juegos...');
-            
-            // Usamos los datos importados en lugar del array hardcoded
-            await GameWord.insertMany(initialGameWords);
-            
-            console.log(`✅ Base de datos de juegos inicializada con ${initialGameWords.length} palabras.`);
+        // 1. Verificar e insertar datos de "El Impostor"
+        const impostorCount = await GameWord.countDocuments({ gameType: 'impostor' });
+        if (impostorCount === 0) {
+            console.log('🌱 Sembrando datos para El Impostor...');
+            await GameWord.insertMany(impostorData);
+            console.log(`✅ Insertadas ${impostorData.length} palabras de Impostor.`);
         }
+
+        // 2. Verificar e insertar datos de "Wordle"
+        const wordleCount = await GameWord.countDocuments({ gameType: 'wordle' });
+        if (wordleCount === 0) {
+            console.log('🌱 Sembrando datos para Wordle...');
+            // Filtro de seguridad adicional para asegurar que son 5 letras antes de insertar
+            const validWordleData = wordleData.filter(w => w.word.length === 5);
+            await GameWord.insertMany(validWordleData);
+            console.log(`✅ Insertadas ${validWordleData.length} palabras de Wordle.`);
+        }
+        
     } catch (error) {
         console.error('❌ Error al sembrar la base de datos de juegos:', error);
     }
@@ -1799,6 +1810,41 @@ app.post('/api/games/impostor/init', apiLimiter, isAuthenticated, async (req, re
     } catch (error) {
         console.error('Error en /api/games/impostor/init:', error);
         res.status(500).json({ message: 'Error al iniciar la partida.' });
+    }
+});
+
+/**
+ * @route   GET /api/games/wordle/init
+ * @description Inicia una partida de Wordle obteniendo una palabra aleatoria de 5 letras.
+ * @access  Private
+ */
+app.get('/api/games/wordle/init', apiLimiter, isAuthenticated, async (req, res) => {
+    try {
+        // Buscamos palabras específicas de tipo 'wordle'
+        const count = await GameWord.countDocuments({ gameType: 'wordle' });
+
+        if (count === 0) {
+            return res.status(404).json({ message: 'No hay palabras configuradas para Wordle.' });
+        }
+
+        const random = Math.floor(Math.random() * count);
+        const selectedWord = await GameWord.findOne({ gameType: 'wordle' }).skip(random);
+
+        // Normalización defensiva: Asegurar que devolvemos la palabra limpia
+        const cleanWord = selectedWord.word.toUpperCase().replace(/Ñ/g, 'N');
+
+        // NOTA DE SEGURIDAD: En un entorno altamente competitivo, no enviaríamos la palabra
+        // al cliente, sino que validaríamos el intento en el servidor. 
+        // Para este caso de uso (juego casual), enviarla cifrada o simple es aceptable.
+        // Aquí la enviamos simple para facilitar tu implementación.
+        res.status(200).json({
+            word: cleanWord,
+            id: selectedWord._id
+        });
+
+    } catch (error) {
+        console.error('Error en /api/games/wordle/init:', error);
+        res.status(500).json({ message: 'Error al iniciar Wordle.' });
     }
 });
 

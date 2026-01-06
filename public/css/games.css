@@ -6,19 +6,16 @@
 /* =========================================
    VARIABLES & CONFIGURACIÓN
    ========================================= */
-/* Definimos colores semánticos locales para facilitar el mantenimiento */
 #game-container {
     --game-impostor-color: #ff4444;
     --game-player-color: #44aaff;
     --game-card-bg: var(--color-fondo-input);
 }
 
-/* Ajustes automáticos de color para Modo Claro (Light Mode) */
-/* Al cambiar las variables aquí, se actualizan en todos los elementos hijos automáticamente */
 body:not(.night-mode) #game-container {
     --game-impostor-color: #cc0000;
     --game-player-color: #0066cc;
-    --game-card-bg: #fff; /* Fondo específico para cartas en modo claro */
+    --game-card-bg: #fff;
 }
 
 /* =========================================
@@ -63,6 +60,18 @@ body:not(.night-mode) #game-container {
     padding: 1rem;
 }
 
+.impostor-header {
+    margin-bottom: 2rem;
+}
+
+/* Estado de carga inicial */
+.game-loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
 /* --- Sliders --- */
 .range-group {
     text-align: left;
@@ -92,7 +101,6 @@ body:not(.night-mode) #game-container {
     transition: background .2s;
 }
 
-/* Mixin para thumb del slider (Chrome/Safari/Edge) */
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -104,7 +112,6 @@ body:not(.night-mode) #game-container {
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
-/* Mixin para thumb del slider (Firefox) */
 .slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
@@ -127,6 +134,63 @@ body:not(.night-mode) #game-container {
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
+}
+
+.label-custom {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Área de Palabras Personalizadas */
+.custom-area {
+    margin-top: 1rem;
+    border-top: 1px solid #ccc;
+    padding-top: 1rem;
+}
+
+.btn-add-word-container {
+    margin-top: 0.5rem;
+}
+
+.custom-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.custom-index {
+    align-self: center;
+}
+
+.custom-input {
+    flex: 1;
+}
+
+.btn-remove-row {
+    background: var(--error-color, red);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50px;
+}
+
+/* --- Fase de Inicio (Start Player) --- */
+.starter-player-box {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: inline-block;
+    border: 2px solid var(--primary-color);
+}
+
+.starter-player-name {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.starter-instruction {
+    margin-top: 2rem;
 }
 
 /* =========================================
@@ -155,10 +219,9 @@ body:not(.night-mode) #game-container {
     transform: rotateY(180deg);
 }
 
-/* Estilos compartidos Frente/Dorso */
 .card-front, .card-back {
     position: absolute;
-    inset: 0; /* Propiedad moderna: reemplaza top:0, left:0, w:100%, h:100% */
+    inset: 0;
     margin: 0;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -188,7 +251,6 @@ body:not(.night-mode) #game-container {
     color: var(--color-texto-secundario);
 }
 
-/* Contenido de la carta trasera */
 .card-back p { font-size: 1.5rem; margin-bottom: 1rem; }
 .card-back strong {
     display: block;
@@ -199,18 +261,15 @@ body:not(.night-mode) #game-container {
 }
 
 /* =========================================
-   ESTILOS DE ROLES Y VICTORIA (UNIFICADOS)
+   ESTILOS DE ROLES Y VICTORIA
    ========================================= */
-
-/* IMPOSTOR (Rojo) - Aplica a Carta, Texto Victoria y Pista */
 .role-impostor,
 .victory-impostor,
 .role-impostor strong {
     color: var(--game-impostor-color);
-    border-color: var(--game-impostor-color); /* Solo visible si el elemento tiene borde definido */
+    border-color: var(--game-impostor-color);
 }
 
-/* JUGADOR (Azul) - Aplica a Carta, Texto Victoria y Palabra */
 .role-player,
 .victory-player,
 .role-player strong {
@@ -218,15 +277,12 @@ body:not(.night-mode) #game-container {
     border-color: var(--game-player-color);
 }
 
-/* Fondo específico para roles (Variable dinámica) */
 .role-impostor, .role-player {
     background-color: var(--game-card-bg);
 }
 
-/* Sombras específicas para textos de victoria */
 .victory-impostor { text-shadow: 0 0 10px rgba(255, 68, 68, 0.2); }
 .victory-player   { text-shadow: 0 0 10px rgba(68, 170, 255, 0.2); }
-
 
 /* =========================================
    VOTACIÓN Y RESULTADOS

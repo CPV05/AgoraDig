@@ -40,6 +40,9 @@ async function initImpostorGame() {
 function renderConfigurationPhase() {
     const container = document.getElementById('game-container');
     
+    // Eliminamos la clase de carga inicial para restaurar el flujo normal
+    container.classList.remove('game-loading-state');
+    
     const savedPlayerCount = gameState.players.length > 0 ? gameState.players.length : 4;
     const calculateMaxImpostors = (players) => Math.max(1, Math.ceil(players / 2) - 1);
     
@@ -80,18 +83,20 @@ function renderConfigurationPhase() {
                     <label>Categorías</label>
                     <div class="checkbox-group">
                         ${categoriesHTML}
-                        <label style="color: var(--primary-color); font-weight:bold;">
+                        <label class="label-custom">
                             <input type="checkbox" name="category" value="${CUSTOM_CAT_KEY}" id="chk-custom" ${isCustomChecked}> 
                             ${CUSTOM_CAT_KEY}
                         </label>
                     </div>
                 </div>
 
-                <div id="custom-config-area" class="custom-area ${customHiddenClass} center-text" style="margin-top:1rem; border-top:1px solid #ccc; padding-top:1rem;">
+                <div id="custom-config-area" class="custom-area ${customHiddenClass} center-text">
                     <h3>Palabras Personalizadas (${MIN_CUSTOM_WORDS}-${MAX_CUSTOM_WORDS})</h3>
                     <p class="small-text">Máx ${MAX_WORD_LENGTH} caracteres.</p>
                     <div id="custom-words-list"></div>
-                    <button type="button" id="btn-add-word" class="button-secondary small" style="margin-top:0.5rem;">+ Añadir Palabra</button>
+                    <div class="btn-add-word-container">
+                        <button type="button" id="btn-add-word" class="button-secondary small">+ Añadir Palabra</button>
+                    </div>
                     <br><br>
                 </div>
 
@@ -142,15 +147,12 @@ function renderConfigurationPhase() {
     const addCustomRowToDOM = (valWord, valHint, index) => {
         const row = document.createElement('div');
         row.className = 'custom-row';
-        row.style.display = 'flex';
-        row.style.gap = '0.5rem';
-        row.style.marginBottom = '0.5rem';
         
         row.innerHTML = `
-            <span style="align-self:center;">${index + 1}.</span>
-            <input type="text" class="custom-input word" placeholder="Palabra" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
-            <input type="text" class="custom-input hint" placeholder="Pista" maxlength="${MAX_WORD_LENGTH}" required style="flex:1;">
-            <button type="button" class="btn-remove-row" style="background:var(--error-color, red); color:white; border:none; border-radius:4px; cursor:pointer; width:50px;">X </button>
+            <span class="custom-index">${index + 1}.</span>
+            <input type="text" class="custom-input word" placeholder="Palabra" maxlength="${MAX_WORD_LENGTH}" required>
+            <input type="text" class="custom-input hint" placeholder="Pista" maxlength="${MAX_WORD_LENGTH}" required>
+            <button type="button" class="btn-remove-row">X</button>
         `;
 
         const wordInput = row.querySelector('.word');
@@ -375,11 +377,11 @@ function renderStartPlayerPhase() {
     container.innerHTML = `
         <div class="game-phase center-text animate-fade-in">
             <h2>EMPIEZA</h2>
-            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px; display:inline-block; border: 2px solid var(--primary-color);">
-                <h1 style="color: var(--primary-color); margin:0;">${starterPlayer.name}</h1>
+            <div class="starter-player-box">
+                <h1 class="starter-player-name">${starterPlayer.name}</h1>
             </div>
             
-            <p class="small-text" style="margin-top:2rem;">Cuando estéis listos, iniciad la ronda.</p>
+            <p class="small-text starter-instruction">Cuando estéis listos, iniciad la ronda.</p>
             <button id="start-voting-btn" class="button-primary">Empezar Ronda 1</button>
         </div>
     `;

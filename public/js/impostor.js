@@ -198,10 +198,31 @@ function renderConfigurationPhase() {
         impostorsValDisplay.textContent = e.target.value;
     });
 
-    chkCustom.addEventListener('change', (e) => {
+    chkCustom.addEventListener('change', async (e) => {
+        const errorEl = document.getElementById('game-error');
+        errorEl.classList.add('hidden'); // Limpiar errores
+
         if (e.target.checked) {
-            customArea.classList.remove('hidden');
-            renderCustomInputs();
+            try {
+                // Hacemos una petición ligera para verificar si hay sesión activa
+                const authCheck = await fetch('/api/profile');
+                
+                if (!authCheck.ok) {
+                    // Si no está logueado (401/403/404), revertimos el checkbox y mostramos error
+                    e.target.checked = false;
+                    errorEl.textContent = '🔒 Función exclusiva: Debes iniciar sesión para crear partidas personalizadas.';
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
+
+                // Si está autenticado, procedemos normal
+                customArea.classList.remove('hidden');
+                renderCustomInputs();
+
+            } catch (error) {
+                console.error("Error verificando sesión", error);
+                e.target.checked = false;
+            }
         } else {
             customArea.classList.add('hidden');
             customListContainer.innerHTML = ''; 

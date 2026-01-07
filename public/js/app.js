@@ -1350,44 +1350,28 @@ async function renderPage(path) {
         templatePath = '/templates/about.html';
         document.title = 'Acerca de';
         await loadViewCss([]);
+
     } else if (pathname === '/contact' || pathname === '/contact-us') {
         templatePath = '/templates/contact.html';
         document.title = 'Contacto';
         cssPaths = ['/css/forms.css'];
         await loadViewCss(cssPaths);
+
     } else if (pathname === '/games') {
         templatePath = '/templates/games.html';
         document.title = 'Juegos - AgoraDig';
         cssPaths = ['/css/games.css'];
         await loadViewCss(cssPaths);
-    } else if (pathname === '/games/impostor') {
-        // SEGURIDAD: Verificar autenticación
-        const isAuthenticated = await checkAuth();
-        
-        if (!isAuthenticated) {
-            // FIX: Debemos ocultar el loader antes de salir, o se quedará infinito.
-            loaderContainer.classList.add('hidden'); 
-            // Opcional: Redirigir explícitamente si checkAuth no lo hizo
-            return; 
-        }
 
+    } else if (pathname === '/games/impostor') {
         templatePath = '/templates/impostor.html';
         document.title = 'El Impostor - Jugando';
         cssPaths = ['/css/games.css', '/css/forms.css'];
         await loadViewCss(cssPaths);
 
     } else if (pathname === '/games/wordle') {
-        // SEGURIDAD: Verificar autenticación
-        const isAuthenticated = await checkAuth();
-        
-        if (!isAuthenticated) {
-            loaderContainer.classList.add('hidden'); 
-            return; 
-        }
-
         templatePath = '/templates/wordle.html';
         document.title = 'Wordle - Jugando';
-        // Cargamos los estilos del juego
         cssPaths = ['/css/wordle.css', '/css/games.css']; 
         await loadViewCss(cssPaths);
 
@@ -1396,16 +1380,18 @@ async function renderPage(path) {
         document.title = 'Crear Cuenta';
         cssPaths = ['/css/forms.css'];
         await loadViewCss(cssPaths);
+
     } else if (pathname === '/register-success') {
         templatePath = '/templates/register-success.html';
         document.title = 'Registro Exitoso';
         await loadViewCss([]);
+
     } else if (pathname === '/login') {
         templatePath = '/templates/login.html';
         document.title = 'Iniciar Sesión';
         cssPaths = ['/css/forms.css'];
         await loadViewCss(cssPaths);
-    
+        
     } else if (path.startsWith('/view-profile')) {
         cssPaths = ['/css/profile.css'];
         await loadViewCss(cssPaths);

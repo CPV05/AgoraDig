@@ -1778,7 +1778,7 @@ app.get('/api/search', apiLimiter, async (req, res) => {
  * @description Inicializa una partida obteniendo una palabra aleatoria basada en categorías.
  * @access  Private
  */
-app.post('/api/games/impostor/init', apiLimiter, isAuthenticated, async (req, res) => {
+app.post('/api/games/impostor/init', apiLimiter, async (req, res) => {
     try {
         const { categories } = req.body; // Array de categorías seleccionadas
         
@@ -1818,7 +1818,7 @@ app.post('/api/games/impostor/init', apiLimiter, isAuthenticated, async (req, re
  * @description Inicia una partida de Wordle obteniendo una palabra aleatoria de 5 letras.
  * @access  Private
  */
-app.get('/api/games/wordle/init', apiLimiter, isAuthenticated, async (req, res) => {
+app.get('/api/games/wordle/init', apiLimiter, async (req, res) => {
     try {
         // Buscamos palabras específicas de tipo 'wordle'
         const count = await GameWord.countDocuments({ gameType: 'wordle' });

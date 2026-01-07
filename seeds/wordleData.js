@@ -9,7 +9,6 @@ const wordleWords = [
     { gameType: 'wordle', category: 'General', word: 'ABEJA' },
     { gameType: 'wordle', category: 'General', word: 'ABRIL' },
     { gameType: 'wordle', category: 'General', word: 'ABRIR' },
-    { gameType: 'wordle', category: 'General', word: 'ABUEL' },
     { gameType: 'wordle', category: 'General', word: 'ACABO' },
     { gameType: 'wordle', category: 'General', word: 'ACERO' },
     { gameType: 'wordle', category: 'General', word: 'ACIDO' },

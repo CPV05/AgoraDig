@@ -26,6 +26,7 @@ const helmet = require('helmet');
 const axios = require('axios');
 const cloudinary = require('cloudinary').v2;
 const sharp = require('sharp');
+const xss = require('xss');
 
 
 // =================================================================
@@ -351,6 +352,15 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 4 * 1024 * 1024 // 4 Megabytes
+  },
+  fileFilter: (req, file, cb) => {
+      // Verificar MIME type
+      const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+      if (allowedMimes.includes(file.mimetype)) {
+          cb(null, true);
+      } else {
+          cb(new Error('Tipo de archivo inválido. Solo se permiten imágenes (JPG/JPEG, PNG, WEBP).'));
+      }
   }
 });
 
@@ -753,6 +763,7 @@ app.post('/api/contact', actionLimiter, async (req, res) => {
     try {
         const { name, email, username, subject, message } = req.body;
 
+        // Validación inicial de existencia
         if (!name || !email || !subject || !message) {
             return res.status(400).json({ message: 'Los campos nombre, email, asunto y mensaje son obligatorios.' });
         }
@@ -762,12 +773,24 @@ app.post('/api/contact', actionLimiter, async (req, res) => {
             return res.status(400).json({ message: 'Por favor, introduce un formato de email válido.' });
         }
 
+        // Limpiamos los campos de texto libre antes de validar longitud o guardar.
+        const cleanName = xss(name);
+        const cleanSubject = xss(subject);
+        const cleanMessage = xss(message);
+        // Si username existe, lo limpiamos; si no, valor por defecto.
+        const cleanUsername = username ? xss(username) : 'No especificado';
+
+        // Validación Post-Sanitización
+        if (!cleanName.trim() || !cleanSubject.trim() || !cleanMessage.trim()) {
+            return res.status(400).json({ message: 'El contenido proporcionado no es válido (posible código malicioso detectado).' });
+        }
+
         const newTicket = new ContactTicket({
-            name,
-            email,
-            username: username || 'No especificado',
-            subject,
-            message
+            name: cleanName,
+            email: email,
+            username: cleanUsername,
+            subject: cleanSubject,
+            message: cleanMessage
         });
 
         await newTicket.save();
@@ -1148,11 +1171,21 @@ app.post('/api/messages', actionLimiter, isAuthenticated, async (req, res) => {
         if (title.trim().length > 100 || title.trim().length < 3) return res.status(400).json({ message: 'El título debe tener entre 3 y 100 caracteres.' });
         if (content.trim().length > 1500 || content.trim().length < 10) return res.status(400).json({ message: 'El contenido debe tener entre 10 y 1500 caracteres.' });
 
-        const parsedHashtags = hashtags ? hashtags.match(/#(\w+)/g)?.map(h => h.substring(1)) || [] : [];
+        // Esto elimina cualquier tag HTML peligroso (<script>, <object>, onclick, etc.)
+        const cleanTitle = xss(title);
+        const cleanContent = xss(content); 
+        const cleanHashtags = xss(hashtags);
+
+        // Validar longitudes DESPUÉS de limpiar (por si xss elimina todo)
+        if (!cleanTitle.trim() || !cleanContent.trim()) {
+             return res.status(400).json({ message: 'El contenido no es válido.' });
+        }
+
+        const parsedHashtags = cleanHashtags ? cleanHashtags.match(/#(\w+)/g)?.map(h => h.substring(1)) || [] : [];
 
         const newMessage = new Message({
-            title,
-            content,
+            title: cleanTitle,
+            content: cleanContent,
             hashtags: parsedHashtags,
             sender: req.session.userId
         });
@@ -1209,10 +1242,22 @@ app.post('/api/messages/:id/reply', actionLimiter, isAuthenticated, async (req, 
         if (title.trim().length > 100 || title.trim().length < 3) return res.status(400).json({ message: 'El título debe tener entre 3 y 100 caracteres.' });
         if (content.trim().length > 1500 || content.trim().length < 10) return res.status(400).json({ message: 'El contenido debe tener entre 10 y 1500 caracteres.' });
 
-        const parsedHashtags = hashtags ? hashtags.match(/#(\w+)/g)?.map(h => h.substring(1)) || [] : [];
+        // --- SEGURIDAD: SANITIZACIÓN XSS ---
+        const cleanTitle = xss(title);
+        const cleanContent = xss(content);
+        const cleanHashtags = hashtags ? xss(hashtags) : '';
+
+        // Validación Post-Sanitización
+        if (!cleanTitle.trim() || !cleanContent.trim()) {
+             return res.status(400).json({ message: 'El contenido no es válido o contenía elementos no permitidos.' });
+        }
+
+        // Procesamos hashtags desde la versión limpia
+        const parsedHashtags = cleanHashtags ? cleanHashtags.match(/#(\w+)/g)?.map(h => h.substring(1)) || [] : [];
         
         const newReply = new Message({
-            title, content,
+            title: cleanTitle, 
+            content: cleanContent,
             hashtags: parsedHashtags,
             sender: req.session.userId,
             referencedMessage: parentMessageId

@@ -16,7 +16,8 @@ let gameState = {
     config: {
         impostorCount: 1, 
         categories: [],
-        customWords: [] 
+        customWords: [],
+        showImpostorHint: true
     },
     secretWord: '',
     impostorHint: '',
@@ -40,7 +41,7 @@ async function initImpostorGame() {
 function renderConfigurationPhase() {
     const container = document.getElementById('game-container');
     
-    // Eliminamos la clase de carga inicial para restaurar el flujo normal
+    // Eliminamos la clase de carga inicial
     container.classList.remove('game-loading-state');
     
     const savedPlayerCount = gameState.players.length > 0 ? gameState.players.length : 4;
@@ -61,6 +62,7 @@ function renderConfigurationPhase() {
 
     const isCustomChecked = selectedCategories.includes(CUSTOM_CAT_KEY) ? 'checked' : '';
     const customHiddenClass = isCustomChecked ? '' : 'hidden';
+    const isHintChecked = gameState.config.showImpostorHint ? 'checked' : '';
 
     container.innerHTML = `
         <div class="game-phase animate-fade-in">
@@ -79,6 +81,14 @@ function renderConfigurationPhase() {
                     <input type="range" id="num-impostors" min="1" max="${initialMaxImpostors}" value="${savedImpostorCount}" class="slider">
                 </div>
 
+                <div class="form-group center-text">
+                    <label class="label-custom" style="font-weight: bold; cursor: pointer;">
+                        <input type="checkbox" id="chk-impostor-hint" ${isHintChecked}> 
+                        Pista para el Impostor
+                        <br>
+                        <small>(Recomendado)</small>
+                    </label>
+                </div>
                 <div class="form-group">
                     <label>Categorías</label>
                     <div class="checkbox-group">
@@ -119,7 +129,6 @@ function renderConfigurationPhase() {
     const generateNameInputs = (num) => {
         const currentInputs = document.querySelectorAll('.player-name-input');
         const currentNamesFromDom = Array.from(currentInputs).map(i => i.value);
-
         namesContainer.innerHTML = '';
         for (let i = 0; i < num; i++) {
             const input = document.createElement('input');
@@ -135,7 +144,6 @@ function renderConfigurationPhase() {
 
     const renderCustomInputs = () => {
         let wordsToRender = gameState.config.customWords;
-        // Rellenar hasta el mínimo si hace falta
         while (wordsToRender.length < MIN_CUSTOM_WORDS) {
             wordsToRender.push({ word: '', hint: '' });
         }
@@ -147,82 +155,63 @@ function renderConfigurationPhase() {
     const addCustomRowToDOM = (valWord, valHint, index) => {
         const row = document.createElement('div');
         row.className = 'custom-row';
-        
         row.innerHTML = `
             <span class="custom-index">${index + 1}.</span>
             <input type="text" class="custom-input word" placeholder="Palabra" maxlength="${MAX_WORD_LENGTH}" required>
             <input type="text" class="custom-input hint" placeholder="Pista" maxlength="${MAX_WORD_LENGTH}" required>
             <button type="button" class="btn-remove-row">X</button>
         `;
-
         const wordInput = row.querySelector('.word');
         const hintInput = row.querySelector('.hint');
         wordInput.value = valWord || '';
         hintInput.value = valHint || '';
-        
         row.querySelector('.btn-remove-row').addEventListener('click', () => {
             const currentRows = customListContainer.querySelectorAll('.custom-row');
-            
             if (currentRows.length > MIN_CUSTOM_WORDS) {
-                // Si hay más del mínimo, eliminamos la fila
                 row.remove();
             } else {
-                // Si estamos en el mínimo, solo limpiamos el contenido
                 wordInput.value = '';
                 hintInput.value = '';
             }
             updateCustomUI();
         });
-        
         customListContainer.appendChild(row);
     };
 
     const updateCustomUI = () => {
         const rows = customListContainer.querySelectorAll('.custom-row');
-        // Renumerar índices visuales
         rows.forEach((row, idx) => row.querySelector('span').textContent = `${idx + 1}.`);
-        
         btnAddWord.style.display = rows.length >= MAX_CUSTOM_WORDS ? 'none' : 'inline-block';
     };
 
+    // Event Listeners existentes
     numPlayersInput.addEventListener('input', (e) => {
         const val = parseInt(e.target.value, 10);
         playersValDisplay.textContent = val;
         const maxImpostors = calculateMaxImpostors(val);
         numImpostorsInput.max = maxImpostors;
+        if(parseInt(numImpostorsInput.value) > maxImpostors) numImpostorsInput.value = maxImpostors; // Corrección pequeña de UX
         impostorsValDisplay.textContent = numImpostorsInput.value;
         generateNameInputs(val);
     });
 
-    numImpostorsInput.addEventListener('input', (e) => {
-        impostorsValDisplay.textContent = e.target.value;
-    });
+    numImpostorsInput.addEventListener('input', (e) => impostorsValDisplay.textContent = e.target.value);
 
     chkCustom.addEventListener('change', async (e) => {
-        const errorEl = document.getElementById('game-error');
-        errorEl.classList.add('hidden'); // Limpiar errores
-
+         const errorEl = document.getElementById('game-error');
+        errorEl.classList.add('hidden'); 
         if (e.target.checked) {
             try {
-                // Hacemos una petición ligera para verificar si hay sesión activa
                 const authCheck = await fetch('/api/profile');
-                
                 if (!authCheck.ok) {
-                    // Si no está logueado (401/403/404), revertimos el checkbox y mostramos error
                     e.target.checked = false;
                     errorEl.textContent = '🔒 Función exclusiva: Debes iniciar sesión para crear partidas personalizadas.';
                     errorEl.classList.remove('hidden');
                     return;
                 }
-
-                // Si está autenticado, procedemos normal
                 customArea.classList.remove('hidden');
                 renderCustomInputs();
-
-            } catch (error) {
-                console.error("Error verificando sesión", error);
-                e.target.checked = false;
-            }
+            } catch (error) { console.error(error); e.target.checked = false; }
         } else {
             customArea.classList.add('hidden');
             customListContainer.innerHTML = ''; 
@@ -240,6 +229,7 @@ function renderConfigurationPhase() {
     generateNameInputs(savedPlayerCount);
     if (isCustomChecked) renderCustomInputs();
 
+    // HANDLER DEL SUBMIT
     document.getElementById('game-config-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const errorEl = document.getElementById('game-error');
@@ -249,7 +239,6 @@ function renderConfigurationPhase() {
         const names = Array.from(nameInputs).map(i => 
             i.value.trim().substring(0, MAX_NAME_LENGTH).replace(/</g, "&lt;").replace(/>/g, "&gt;")
         );
-
         const categories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
         const useCustom = categories.includes(CUSTOM_CAT_KEY);
         const standardCategories = categories.filter(c => c !== CUSTOM_CAT_KEY);
@@ -267,13 +256,13 @@ function renderConfigurationPhase() {
 
         const impostorCount = parseInt(numImpostorsInput.value, 10);
         
-        let cleanCustomWords = [];
+         let cleanCustomWords = [];
         if (useCustom) {
             const rows = customListContainer.querySelectorAll('.custom-row');
             cleanCustomWords = Array.from(rows).map(row => ({
                 word: row.querySelector('.word').value.trim().substring(0, MAX_WORD_LENGTH).replace(/</g, "&lt;"),
                 hint: row.querySelector('.hint').value.trim().substring(0, MAX_WORD_LENGTH).replace(/</g, "&lt;")
-            })).filter(item => item.word && item.hint); // Filtramos vacíos por seguridad
+            })).filter(item => item.word && item.hint);
 
             if (cleanCustomWords.length < MIN_CUSTOM_WORDS || cleanCustomWords.length > MAX_CUSTOM_WORDS) {
                 errorEl.textContent = `La categoría personalizada requiere entre ${MIN_CUSTOM_WORDS} y ${MAX_CUSTOM_WORDS} palabras completas.`;
@@ -283,6 +272,7 @@ function renderConfigurationPhase() {
             sessionStorage.setItem('impostor_custom_words', JSON.stringify(cleanCustomWords));
         }
 
+        gameState.config.showImpostorHint = document.getElementById('chk-impostor-hint').checked;        
         gameState.config.impostorCount = impostorCount;
         gameState.config.categories = categories;
         gameState.config.customWords = cleanCustomWords;
@@ -330,7 +320,6 @@ function renderConfigurationPhase() {
         }
     });
 }
-
 // --- FASE 2: PRESENTACIÓN ---
 function renderPresentationPhase(playerIndex) {
     const container = document.getElementById('game-container');
@@ -343,9 +332,16 @@ function renderPresentationPhase(playerIndex) {
     const player = gameState.players[playerIndex];
     const isImpostor = player.role === 'impostor';
     
-    const secretText = isImpostor 
-        ? `Eres el IMPOSTOR<br><br>Pista:<strong> ${gameState.impostorHint}</strong>` 
-        : `Palabra:<br><strong>${gameState.secretWord}</strong>`;
+    let secretText;
+    if (isImpostor) {
+        secretText = 'Eres el IMPOSTOR';
+        if (gameState.config.showImpostorHint) {
+            secretText += `<br><br>Pista:<strong> ${gameState.impostorHint}</strong>`;
+        }
+    } else {
+        secretText = `Palabra:<br><strong>${gameState.secretWord}</strong>`;
+    }
+
     const roleClass = isImpostor ? 'role-impostor' : 'role-player';
 
     container.innerHTML = `
